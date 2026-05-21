@@ -5,6 +5,8 @@ import HomePage from "../pages/home/HomePage";
 import NotesPage from "../pages/Notes/NotesPage";
 import SignUp from "../pages/SignUp/SignUp";
 import Login from "../pages/login/Login";
+import AdminLayout from "../layouts/AdminLayout/AdminLayout";
+import Users from "../components/Admin/Users/Users";
 
 export const router = createBrowserRouter([
   {
@@ -32,5 +34,27 @@ export const router = createBrowserRouter([
         Component: NotFound,
       },
     ],
+  },
+  {
+    path: "admin",
+    Component: AdminLayout,
+    children: [
+      {
+        index: true,
+        Component: HomePage,
+      },
+      {
+        path: "users",
+        Component: Users,
+      },
+      {
+        path: "*",
+        Component: NotFound,
+      },
+    ],
+  },
+  {
+    path: "*",
+    Component: NotFound,
   },
 ]);

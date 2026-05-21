@@ -1,7 +1,7 @@
 import { NavLink } from "react-router";
-import Logo from "./../Logo/Logo";
-import ThemeToggle from "./../ThemeToggle/ThemeToggle";
-import { useAuth } from "../../hooks/useAuth";
+import Logo from "../../Logo/Logo";
+import ThemeToggle from "../../ThemeToggle/ThemeToggle";
+import { useAuth } from "../../../hooks/useAuth";
 
 const navLinks = (
   <>
@@ -9,15 +9,12 @@ const navLinks = (
       <NavLink to="/">Home</NavLink>
     </li>
     <li>
-      <NavLink to="/notes">Notes</NavLink>
-    </li>
-    <li>
-      <NavLink to="/admin">Admin</NavLink>
+      <NavLink to="/admin/users">Users</NavLink>
     </li>
   </>
 );
 
-const Navbar = () => {
+const AdminNavbar = () => {
   const { user, logout } = useAuth();
   return (
     <div className="bg-base-100 shadow-sm">
@@ -104,4 +101,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default AdminNavbar;

@@ -1,6 +1,6 @@
 import { NavLink } from "react-router";
-import Logo from "./../Logo/Logo";
-import ThemeToggle from "./../ThemeToggle/ThemeToggle";
+import Logo from "../Logo/Logo";
+import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import { useAuth } from "../../hooks/useAuth";
 
 const navLinks = (
