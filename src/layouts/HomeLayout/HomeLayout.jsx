@@ -5,7 +5,7 @@ const HomeLayout = () => {
   return (
     <div>
       <Navbar />
-      <main className="max-w-7xl mx-auto max-h-screen overflow-hidden">
+      <main className="max-w-7xl mx-auto min-h-screen overflow-hidden">
         <Outlet />
       </main>
     </div>
