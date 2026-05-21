@@ -9,14 +9,16 @@ const UserModal = ({ editingUser, setEditingUser, setUsers }) => {
     const form = e.target;
     const payload = {
       name: form.name.value,
+      username: form.username.value,
       email: form.email.value,
+      phone_number: form.phone_number.value,
       role: form.role.value,
     };
     try {
-      const { data } = await axios.put(`/users/${editingUser._id}`, payload);
+      const { data } = await axios.patch(`/user/${editingUser.id}`, payload);
       setUsers((prev) =>
         prev.map((u) =>
-          u._id === editingUser._id ? data?.user || { ...u, ...payload } : u,
+          u.id === editingUser.id ? data?.user || { ...u, ...payload } : u,
         ),
       );
       Swal.fire("Updated", "", "success");
@@ -49,7 +51,6 @@ const UserModal = ({ editingUser, setEditingUser, setUsers }) => {
                 name="name"
                 defaultValue={editingUser.name}
                 className="input input-bordered w-full"
-                required
               />
             </label>
             <label className="form-control w-full">
@@ -67,7 +68,6 @@ const UserModal = ({ editingUser, setEditingUser, setUsers }) => {
                 name="phone_number"
                 defaultValue={editingUser.phone_number}
                 className="input input-bordered w-full"
-                required
               />
             </label>
             <label className="form-control w-full">
