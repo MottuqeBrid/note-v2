@@ -1,6 +1,7 @@
 import { NavLink } from "react-router";
 import Logo from "./../Logo/Logo";
 import ThemeToggle from "./../ThemeToggle/ThemeToggle";
+import { useAuth } from "../../hooks/useAuth";
 
 const navLinks = (
   <>
@@ -20,6 +21,7 @@ const navLinks = (
 );
 
 const Navbar = () => {
+  const { user, logout } = useAuth();
   return (
     <div className="bg-base-100 shadow-sm">
       <div className="navbar max-w-7xl mx-auto">
@@ -55,12 +57,50 @@ const Navbar = () => {
         </div>
         <div className="navbar-end gap-2">
           <ThemeToggle />
-          <NavLink to="/login" className="btn">
-            Login
-          </NavLink>
-          <NavLink to="/register" className="btn btn-primary">
-            Register
-          </NavLink>
+          {user ? (
+            <div className="dropdown dropdown-end">
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn btn-ghost btn-circle avatar"
+              >
+                <div className="w-10 rounded-full">
+                  <img
+                    alt="User Avatar"
+                    src={
+                      user?.profile_picture ||
+                      "https://w7.pngwing.com/pngs/613/636/png-transparent-computer-icons-user-profile-male-avatar-avatar-heroes-logo-black-thumbnail.png"
+                    }
+                  />
+                </div>
+              </div>
+              <ul
+                tabIndex={0}
+                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+              >
+                <li>
+                  <NavLink to="/profile">Profile</NavLink>
+                </li>
+                {/* <li>
+                  <NavLink to="/settings">Settings</NavLink>
+                </li> */}
+                <li>
+                  <button onClick={logout} className="btn btn-ghost">
+                    Logout
+                  </button>
+                </li>
+              </ul>
+            </div>
+          ) : (
+            <>
+              <NavLink to="/login" className="btn">
+                Login
+              </NavLink>
+              <NavLink to="/register" className="btn btn-primary">
+                Register
+              </NavLink>
+            </>
+          )}
         </div>
       </div>
     </div>

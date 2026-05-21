@@ -1,14 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FiUser, FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
-import useAxios from "./../../src/lib/useAxios";
+import useAxios from "../../lib/useAxios";
 import Swal from "sweetalert2";
-import { setToken } from "../../src/lib/localstoreage";
+import { setToken } from "../../lib/localstoreage";
+import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router";
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const {
     register,
@@ -189,6 +200,7 @@ const SignUp = () => {
                   {...register("confirmPassword", {
                     required: "Please confirm your password",
                     validate: (val) =>
+                      // eslint-disable-next-line react-hooks/incompatible-library
                       val === watch("password") || "Passwords do not match",
                   })}
                 />

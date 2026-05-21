@@ -1,5 +1,5 @@
 function setToken(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
+  localStorage.setItem(key, value.replace(/"/g, ""));
 }
 
 function getToken(key) {
