@@ -73,7 +73,7 @@ const InputFile = ({ register, index, remove, setValue, existingFile }) => {
             ? "border-primary bg-primary/10"
             : file
               ? "border-green-400"
-              : "border-gray-300 hover:border-primary bg-gray-50"
+              : "border-gray-300 hover:border-primary"
         }`}
       >
         <FiUploadCloud

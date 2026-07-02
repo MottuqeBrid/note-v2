@@ -265,32 +265,37 @@ const NoteCard = ({ note, fetchNotes, setShowEditNoteForm, setEditNote }) => {
         {/* Footer */}
         <div className="border-t w-full mb-4 border-slate-100 pt-3 space-y-2">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 text-xs text-slate-400">
-              <FiClock size={11} />
-              <span>{fmtDate(createdAt)}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              {isEdited && (
-                <span className="text-[11px] text-slate-300">
-                  Edited {fmtDate(updatedAt)}
-                </span>
-              )}
-              <div className="flex items-center gap-2">
-                {/* Edit Button */}
-                <button
-                  onClick={() => handleEdit(note)}
-                  className="p-1 rounded-lg hover:bg-primary/70 transition-colors cursor-pointer"
-                >
-                  <FiEdit2 size={18} className="w-full h-full" />
-                </button>
-                {/* Delete Button */}
-                <button
-                  onClick={() => deleteNote(note?._id)}
-                  className="p-1 rounded-lg hover:bg-red-600/70 transition-colors cursor-pointer"
-                >
-                  <FiTrash size={18} className="w-full h-full" />
-                </button>
+            <div className=" space-y-2">
+              {/* Created Date */}
+              <div className="flex items-center gap-1.5 text-xs text-slate-400">
+                <FiClock size={11} />
+                <span>{fmtDate(createdAt)}</span>
               </div>
+              {/* Updated Date */}
+              <div className="flex items-center justify-between">
+                {isEdited && (
+                  <span className="text-[11px] text-slate-300">
+                    Edited {fmtDate(updatedAt)}
+                  </span>
+                )}
+              </div>
+            </div>
+            {/* Actions */}
+            <div className="flex items-center gap-2">
+              {/* Edit Button */}
+              <button
+                onClick={() => handleEdit(note)}
+                className="p-1 rounded-lg hover:bg-primary/70 transition-colors cursor-pointer"
+              >
+                <FiEdit2 size={18} className="w-full h-full" />
+              </button>
+              {/* Delete Button */}
+              <button
+                onClick={() => deleteNote(note?._id)}
+                className="p-1 rounded-lg hover:bg-red-600/70 transition-colors cursor-pointer"
+              >
+                <FiTrash size={18} className="w-full h-full" />
+              </button>
             </div>
           </div>
         </div>

@@ -89,7 +89,7 @@ const InputImage = ({ register, index, remove, setValue, existingImage }) => {
             ? "border-primary bg-primary/10"
             : preview
               ? "border-green-400"
-              : "border-gray-300 hover:border-primary bg-gray-50 cursor-pointer"
+              : "border-gray-300 hover:border-primary cursor-pointer"
         }`}
       >
         {preview ? (

@@ -2,7 +2,7 @@ import DataTable, { useTableExport } from "react-data-table-component";
 import {
   FiUser,
   FiMail,
-  FiPhone,
+  FiCheck,
   FiCalendar,
   FiShield,
   FiEdit,
@@ -10,7 +10,6 @@ import {
   FiDownload,
   FiFileText,
   FiClipboard,
-  FiCheck,
 } from "react-icons/fi";
 import useTheme from "../../../hooks/useTheme";
 import { forwardRef, useState } from "react";
@@ -73,14 +72,26 @@ const UserTable = ({ data = [], loading, onEdit, onDelete, search }) => {
       ),
     },
     {
-      name: "Phone",
-      selector: (row) => row.phone_number,
+      name: "Verified",
+      selector: (row) => row.isVerified,
       sortable: true,
       hide: "lg",
       cell: (row) => (
         <span className="flex items-center gap-1 text-sm text-base-content/60">
-          <FiPhone className="text-base-content/40" />
-          {row.phone_number || "—"}
+          <FiCheck className="text-base-content/40" />
+          {row.isVerified ? "Yes" : "No"}
+        </span>
+      ),
+    },
+    {
+      name: "Deleted",
+      selector: (row) => row.isDeleted,
+      sortable: true,
+      hide: "lg",
+      cell: (row) => (
+        <span className="flex items-center gap-1 text-sm text-base-content/60">
+          <FiCheck className="text-base-content/40" />
+          {row.isDeleted ? "Yes" : "No"}
         </span>
       ),
     },
@@ -99,18 +110,18 @@ const UserTable = ({ data = [], loading, onEdit, onDelete, search }) => {
     },
     {
       name: "Joined",
-      selector: (row) => row.created_at,
+      selector: (row) => row.createdAt,
       sortable: true,
       hide: "lg",
       cell: (row) => (
         <span className="flex items-center gap-1 text-sm text-base-content/60">
           <FiCalendar />
-          {row.created_at ? new Date(row.created_at).toLocaleDateString() : "—"}
+          {row.createdAt ? new Date(row.createdAt).toLocaleDateString() : "—"}
         </span>
       ),
     },
     {
-      name: "",
+      name: "Actions",
       button: true,
       right: true,
       cell: (row) => (
@@ -168,7 +179,11 @@ const UserTable = ({ data = [], loading, onEdit, onDelete, search }) => {
         </h3>
         <div className="flex items-center gap-2">
           <div className="dropdown dropdown-end">
-            <div tabIndex={0} role="button" className="btn btn-ghost btn-sm gap-1">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-sm gap-1"
+            >
               <FiDownload />
               Export
             </div>

@@ -1,8 +1,8 @@
 import { Link } from "react-router";
 
-const Logo = () => {
+const Logo = ({ cls }) => {
   return (
-    <Link to="/" className="flex items-center gap-2">
+    <Link to="/" className={`flex items-center gap-2 ${cls}`}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         className="h-8 w-8 text-primary"
@@ -18,8 +18,9 @@ const Logo = () => {
         />
       </svg>
       <span className="text-2xl font-bold tracking-tight">
+        <span className="text-base-content/60">M</span>
+        <span className="text-base-content/90">-</span>
         <span className="text-primary">Note</span>
-        <span className="text-base-content/60">V2</span>
       </span>
     </Link>
   );
