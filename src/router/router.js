@@ -8,6 +8,7 @@ import Login from "../pages/login/Login";
 import AdminLayout from "../layouts/AdminLayout/AdminLayout";
 import Users from "../pages/AdminPage/Users/Users";
 import AdminPage from "../pages/AdminPage/AdminPage";
+import AdminNotes from "../pages/AdminPage/AdminNotes/AdminNotes";
 
 export const router = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ export const router = createBrowserRouter([
       {
         path: "users",
         Component: Users,
+      },
+      {
+        path: "notes",
+        Component: AdminNotes,
       },
       {
         path: "*",
