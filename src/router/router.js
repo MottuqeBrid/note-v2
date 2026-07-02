@@ -9,6 +9,7 @@ import AdminLayout from "../layouts/AdminLayout/AdminLayout";
 import Users from "../pages/AdminPage/Users/Users";
 import AdminPage from "../pages/AdminPage/AdminPage";
 import AdminNotes from "../pages/AdminPage/AdminNotes/AdminNotes";
+import Profile from "../pages/Profile/Profile";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
       {
         path: "login",
         Component: Login,
+      },
+      {
+        path: "profile",
+        Component: Profile,
       },
       {
         path: "*",
@@ -59,6 +64,7 @@ export const router = createBrowserRouter([
       },
     ],
   },
+
   {
     path: "*",
     Component: NotFound,

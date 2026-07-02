@@ -10,7 +10,6 @@ const formatDate = (date) => {
   });
 };
 const NotePreviewModal = ({ note, onClose }) => {
-  console.log("NotePreviewModal rendered with note:", note);
   if (!note) return null;
 
   return (
