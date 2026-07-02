@@ -6,12 +6,13 @@ import Swal from "sweetalert2";
 import { setToken } from "../../lib/localstoreage";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router";
+import Loading from "../../components/Loading/Loading";
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,7 +35,7 @@ const SignUp = () => {
     console.log(import.meta.env.VITE_API_URL);
     try {
       setIsLoading(true);
-      const res = await api.post("user", data);
+      const res = await api.post("user/signup", data);
       setToken("token", res.data?.token);
       Swal.fire({
         icon: "success",
@@ -54,6 +55,10 @@ const SignUp = () => {
       setIsLoading(false);
     }
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   const inputClass =
     "input input-bordered flex items-center gap-2 transition-shadow duration-300 focus-within:shadow-md w-full";

@@ -1,44 +1,126 @@
-import { FiTrash2 } from "react-icons/fi";
+// InputFile.jsx
+import { useState, useRef, useCallback } from "react";
+import { FiTrash2, FiUploadCloud, FiFile } from "react-icons/fi";
 
-const InputFile = ({ register, index, remove }) => {
+const InputFile = ({ register, index, remove, setValue }) => {
+  const [file, setFile] = useState(null);
+  const [dragOver, setDragOver] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [uploading, setUploading] = useState(false);
+  const inputRef = useRef(null);
+
+  const handleFile = useCallback(
+    (selectedFile) => {
+      if (!selectedFile) return;
+      setFile(selectedFile);
+      setValue(`content.files.${index}.filename`, selectedFile.name);
+      setValue(`content.files.${index}._file`, selectedFile);
+      setValue(`content.files.${index}.type`, selectedFile.type);
+
+      // Fake progress
+      setUploading(true);
+      setProgress(0);
+      const interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            setUploading(false);
+            return 100;
+          }
+          return prev + 10;
+        });
+      }, 80);
+    },
+    [index, setValue],
+  );
+
+  const handleDrop = useCallback(
+    (e) => {
+      e.preventDefault();
+      setDragOver(false);
+      const dropped = e.dataTransfer.files[0];
+      if (dropped) handleFile(dropped);
+    },
+    [handleFile],
+  );
+
+  const formatSize = (bytes) => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
+
   return (
-    <div className="mb-2 flex items-center gap-2">
-      <label className="input">
-        <svg
-          className="h-[1em] opacity-50"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-        >
-          <g
-            strokeLinejoin="round"
-            strokeLinecap="round"
-            strokeWidth="2.5"
-            fill="none"
-            stroke="currentColor"
-          >
-            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
-            <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
-          </g>
-        </svg>
-        <input
-          type="text"
-          className="grow"
-          placeholder="File name"
-          {...register(`content.files.${index}.filename`)}
-        />
-      </label>
-      <input
-        type="file"
-        className="file-input file-input-ghost"
-        {...register(`content.files.${index}.url`)}
-      />
-      <button
-        type="button"
-        onClick={() => remove(index)}
-        className="btn btn-circle btn-error"
+    <div className="mb-3">
+      <div
+        onDrop={handleDrop}
+        onDragOver={(e) => {
+          e.preventDefault();
+          setDragOver(true);
+        }}
+        onDragLeave={() => setDragOver(false)}
+        onClick={() => inputRef.current?.click()}
+        className={`border-2 border-dashed rounded-lg p-4 cursor-pointer transition-all flex items-center gap-3 ${
+          dragOver
+            ? "border-primary bg-primary/10"
+            : file
+              ? "border-green-400 bg-green-50"
+              : "border-gray-300 hover:border-primary bg-gray-50"
+        }`}
       >
-        <FiTrash2 />
-      </button>
+        <FiUploadCloud
+          className={`text-2xl shrink-0 ${file ? "text-green-500" : "text-gray-400"}`}
+        />
+
+        {file ? (
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium truncate flex items-center gap-1">
+              <FiFile className="text-blue-500" /> {file.name}
+            </p>
+            <p className="text-xs text-gray-400">{formatSize(file.size)}</p>
+            {/* Progress Bar */}
+            {uploading && (
+              <div className="mt-1 w-full bg-gray-200 rounded-full h-1.5">
+                <div
+                  className="bg-primary h-1.5 rounded-full transition-all"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            )}
+            {!uploading && progress === 100 && (
+              <p className="text-xs text-green-500 mt-1">✓ Ready</p>
+            )}
+          </div>
+        ) : (
+          <div className="flex-1">
+            <p className="text-sm text-gray-500">
+              {dragOver ? "Drop file here" : "Click or drag file here"}
+            </p>
+          </div>
+        )}
+
+        <input
+          ref={inputRef}
+          type="file"
+          className="hidden"
+          onChange={(e) => handleFile(e.target.files?.[0])}
+        />
+      </div>
+
+      {/* Hidden fields */}
+      <input type="hidden" {...register(`content.files.${index}.filename`)} />
+      <input type="hidden" {...register(`content.files.${index}.url`)} />
+      <input type="hidden" {...register(`content.files.${index}.type`)} />
+
+      <div className="flex justify-end mt-1">
+        <button
+          type="button"
+          onClick={() => remove(index)}
+          className="btn btn-sm btn-error btn-outline gap-1"
+        >
+          <FiTrash2 /> Remove
+        </button>
+      </div>
     </div>
   );
 };

@@ -1,14 +1,64 @@
+// AddNotes.jsx
 import { useState } from "react";
 import NotesForm from "./NotesForm";
+import useAxios from "./../../lib/useAxios";
 
 const AddNotes = ({ setShowAddNoteForm }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const app = useAxios();
+
+  const getToken = () => localStorage.getItem("token") ?? "";
+
+  const uploadFiles = async (files) => {
+    if (!files || files.length === 0) return [];
+    const formData = new FormData();
+    files.forEach((file) => formData.append("files", file));
+    const { data } = await app.post(`upload`, formData, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    console.log("Uploaded files:", data);
+    return data.files ?? [];
+  };
 
   const onSubmit = async (data) => {
     setIsLoading(true);
     try {
-      // TODO: API call will be provided later
-      console.log("Form data:", data);
+      // ✅ Upload files
+      const uploadedFiles = await uploadFiles(
+        data.content.files?.map((f) => f._file).filter(Boolean) ?? [],
+      );
+
+      // ✅ Upload images
+      const uploadedImages = await uploadFiles(
+        data.content.images?.map((f) => f._file).filter(Boolean) ?? [],
+      );
+
+      const payload = {
+        title: data.title,
+        content: {
+          type: data.content.type,
+          text: data.content.text,
+          files: uploadedFiles.map((f) => ({
+            filename: f.filename,
+            url: f.url,
+            type: f.type,
+            originalName: f.originalName,
+          })),
+          images: uploadedImages.map((f) => ({
+            filename: f.filename,
+            url: f.url,
+            type: f.type,
+          })),
+        },
+      };
+
+      await app.post(`note`, payload, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+
       setShowAddNoteForm(false);
     } catch (error) {
       console.error("Failed to save note:", error);
@@ -18,20 +68,18 @@ const AddNotes = ({ setShowAddNoteForm }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-accent/20 bg-opacity-50 flex justify-center items-center overflow-y-auto z-50">
-      <div className="bg-base-100 rounded-lg p-6 w-11/12 md:w-6/12">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Add Notes</h2>
+    <div className="fixed inset-0 bg-black/40 flex justify-center items-start overflow-y-auto z-50 py-10">
+      <div className="bg-base-100 rounded-xl shadow-2xl p-6 w-11/12 md:w-7/12 lg:w-6/12 my-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold">Add Note</h2>
           <button
             onClick={() => setShowAddNoteForm(false)}
-            className="btn btn-square btn-ghost text-gray-500 hover:text-gray-700"
+            className="btn btn-square btn-ghost text-gray-500 hover:text-gray-700 text-xl"
           >
             &times;
           </button>
         </div>
-        <div className="w-full">
-          <NotesForm onSubmit={onSubmit} isLoading={isLoading} />
-        </div>
+        <NotesForm onSubmit={onSubmit} isLoading={isLoading} />
       </div>
     </div>
   );

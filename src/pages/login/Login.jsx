@@ -5,11 +5,12 @@ import useAxios from "../../lib/useAxios";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate, Link } from "react-router";
 import Swal from "sweetalert2";
+import Loading from "../../components/Loading/Loading";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { user, login } = useAuth();
+  const { user, login, loading } = useAuth();
   const navigate = useNavigate();
   const api = useAxios();
 
@@ -59,6 +60,10 @@ const Login = () => {
   const inputClass =
     "input input-bordered flex items-center gap-2 transition-shadow duration-300 focus-within:shadow-md w-full";
   const inputErrorClass = `${inputClass} input-error`;
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4">
