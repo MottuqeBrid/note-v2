@@ -58,7 +58,7 @@ const NotesForm = ({ onSubmit, defaultValues, isLoading }) => {
       content: { type: "text", text: "", files: [], images: [] },
     },
   });
-
+  console.log("defaultValues:", defaultValues);
   const {
     fields: fileFields,
     append: appendFile,
@@ -142,6 +142,7 @@ const NotesForm = ({ onSubmit, defaultValues, isLoading }) => {
               index={index}
               remove={removeFile}
               setValue={setValue}
+              existingFile={!field._file && field.url ? field : null}
             />
           ))}
         </div>
@@ -170,7 +171,7 @@ const NotesForm = ({ onSubmit, defaultValues, isLoading }) => {
               No images added yet
             </p>
           )}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {imageFields.map((field, index) => (
               <InputImage
                 key={field.id}
@@ -180,7 +181,19 @@ const NotesForm = ({ onSubmit, defaultValues, isLoading }) => {
                 setValue={setValue}
               />
             ))}
-          </div>
+          </div> */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {imageFields.map((field, index) => (
+              <InputImage
+                key={field.id}
+                register={register}
+                index={index}
+                remove={removeImage}
+                setValue={setValue}
+                existingImage={!field._file && field.url ? field : null}
+              />
+            ))}
+          </div>{" "}
         </div>
 
         {/* Submit */}

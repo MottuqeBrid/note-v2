@@ -1,10 +1,15 @@
 // InputImage.jsx
 import { useState, useRef, useCallback } from "react";
 import { FiTrash2, FiUploadCloud } from "react-icons/fi";
+import { IoIosReturnRight } from "react-icons/io";
 
-const InputImage = ({ register, index, remove, setValue }) => {
-  const [preview, setPreview] = useState(null);
-  const [file, setFile] = useState(null);
+const InputImage = ({ register, index, remove, setValue, existingImage }) => {
+  // Pre-populate preview with the existing image URL
+  const [preview, setPreview] = useState(existingImage?.url ?? null);
+  const [file, setFile] = useState(
+    existingImage ? { name: existingImage.filename, size: 0 } : null,
+  );
+  const [isExisting, setIsExisting] = useState(!!existingImage);
   const [dragOver, setDragOver] = useState(false);
   const [progress, setProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
@@ -25,12 +30,12 @@ const InputImage = ({ register, index, remove, setValue }) => {
         alert("Only images allowed (jpg, png, webp, gif, svg)");
         return;
       }
+      setIsExisting(false);
       setFile(selectedFile);
       setValue(`content.images.${index}.filename`, selectedFile.name);
       setValue(`content.images.${index}._file`, selectedFile);
       setValue(`content.images.${index}.type`, selectedFile.type);
 
-      // Preview
       const reader = new FileReader();
       reader.onload = (e) => setPreview(e.target.result);
       reader.readAsDataURL(selectedFile);
@@ -49,6 +54,7 @@ const InputImage = ({ register, index, remove, setValue }) => {
         });
       }, 80);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [index, setValue],
   );
 
@@ -93,6 +99,12 @@ const InputImage = ({ register, index, remove, setValue }) => {
               alt="preview"
               className="w-full h-40 object-cover rounded-lg"
             />
+            {isExisting && (
+              <p className="text-xs text-blue-400 flex items-center gap-1 m-2">
+                <IoIosReturnRight />{" "}
+                <span>Already uploaded · click to replace</span>
+              </p>
+            )}
             {/* Overlay */}
             <div className="absolute inset-0 bg-black/30 rounded-lg flex items-center justify-center opacity-0 hover:opacity-100 transition-all">
               <button

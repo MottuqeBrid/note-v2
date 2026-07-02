@@ -2,8 +2,9 @@
 import { useState } from "react";
 import NotesForm from "./NotesForm";
 import useAxios from "./../../lib/useAxios";
+import Swal from "sweetalert2";
 
-const AddNotes = ({ setShowAddNoteForm }) => {
+const AddNotes = ({ setShowAddNoteForm, fetchNotes }) => {
   const [isLoading, setIsLoading] = useState(false);
   const app = useAxios();
 
@@ -55,13 +56,32 @@ const AddNotes = ({ setShowAddNoteForm }) => {
         },
       };
 
-      await app.post(`note`, payload, {
+      const { data: response } = await app.post(`note`, payload, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
-
+      if (response.success) {
+        Swal.fire({
+          icon: "success",
+          title: response.message || "Note added successfully",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Failed to add note",
+          text: response.message || "An error occurred while adding the note.",
+        });
+      }
       setShowAddNoteForm(false);
+      fetchNotes(); // Refresh notes after adding a new one
     } catch (error) {
       console.error("Failed to save note:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Failed to add note",
+        text: error.message || "An error occurred while adding the note.",
+      });
     } finally {
       setIsLoading(false);
     }
