@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import NoteCard from "./NoteCard";
 import AddNotes from "./AddNotes";
 import { useAuth } from "./../../hooks/useAuth";
-import Loading from "../../components/Loading/Loading";
 import { useNavigate } from "react-router";
 import useAxios from "../../lib/useAxios";
 import { FaPlus } from "react-icons/fa";
@@ -11,6 +10,7 @@ import { FiRefreshCcw, FiSearch } from "react-icons/fi";
 import { toast } from "react-toastify";
 import EditNote from "./EditNote";
 import { getToken } from "../../lib/localstoreage";
+import NoteCardSkeleton from "./NoteCardSkeleton";
 
 const NotesPage = () => {
   const [showAddNoteForm, setShowAddNoteForm] = useState(false);
@@ -81,10 +81,6 @@ const NotesPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (loading) {
-    return <Loading />;
-  }
-
   if (!user && !loading) {
     return navigate("/login");
   }
@@ -125,6 +121,10 @@ const NotesPage = () => {
       </div>
 
       <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+        {loading &&
+          Array.from({ length: 6 }).map((_, index) => (
+            <NoteCardSkeleton key={index} />
+          ))}
         {(notes.length === 0 && <p>No notes found</p>) ||
           notes.map((note) => (
             <NoteCard

@@ -11,7 +11,6 @@ import {
 } from "react-icons/fi";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
-import Loading from "../../components/Loading/Loading";
 import { useAuth } from "../../hooks/useAuth";
 import useAxios from "../../lib/useAxios";
 import FileCard from "./FileCard";
@@ -28,6 +27,7 @@ import {
   serializeExistingFile,
   serializeUploadedFile,
 } from "./filesUtils";
+import FolderCardSkeleton from "./FolderCardSkeleton";
 
 const Files = () => {
   const app = useAxios();
@@ -267,7 +267,6 @@ const Files = () => {
     }
   };
 
-  if (loading) return <Loading />;
   if (!user) return null;
 
   return (
@@ -337,7 +336,9 @@ const Files = () => {
       {/* File Grid */}
       {loadingFiles ? (
         <div className="flex min-h-80 items-center justify-center">
-          <Loading />
+          {Array.from({ length: 6 }).map((_, index) => (
+            <FolderCardSkeleton key={index} />
+          ))}
         </div>
       ) : filteredFiles.length > 0 ? (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
