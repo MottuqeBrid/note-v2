@@ -14,6 +14,7 @@ import {
 } from "react-icons/fi";
 import useAxios from "../../lib/useAxios";
 import { getToken } from "../../lib/localstoreage";
+import { toast } from "react-toastify";
 
 const UpdateProfile = () => {
   const [profile, setProfile] = useState(null);
@@ -212,10 +213,12 @@ const UpdateProfile = () => {
       );
 
       setSuccessMsg("Profile updated successfully!");
+      toast.success("Profile updated successfully!");
       setTimeout(() => navigate("/profile"), 1500);
     } catch (err) {
       console.error(err);
       setErrorMsg(err.response?.data?.message ?? "Failed to update profile");
+      toast.error("Failed to update profile");
     } finally {
       setSaving(false);
     }

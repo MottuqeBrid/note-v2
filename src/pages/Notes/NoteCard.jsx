@@ -15,6 +15,7 @@ import {
 import useAxios from "../../lib/useAxios";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import { getToken } from "../../lib/localstoreage";
 
 const FILE_TYPE_MAP = {
   "text/html": {
@@ -140,7 +141,7 @@ const NoteCard = ({ note, fetchNotes, setShowEditNoteForm, setEditNote }) => {
 
   const deleteNote = async (noteId) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = getToken("token");
       if (!token) {
         toast.error("You are not logged in");
         return;

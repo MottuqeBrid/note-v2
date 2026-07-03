@@ -32,7 +32,6 @@ const SignUp = () => {
   const api = useAxios();
 
   const onSubmit = async (data) => {
-    console.log(import.meta.env.VITE_API_URL);
     try {
       setIsLoading(true);
       const res = await api.post("user/signup", data);
@@ -45,7 +44,6 @@ const SignUp = () => {
         timer: 1500,
       });
     } catch (error) {
-      console.log(error);
       Swal.fire({
         icon: "error",
         title: "Error creating account!",

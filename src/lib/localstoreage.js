@@ -3,7 +3,12 @@ function setToken(key, value) {
 }
 
 function getToken(key) {
-  return localStorage.getItem(key);
+  const token = localStorage.getItem(key);
+  if (!token) {
+    const token = sessionStorage.getItem(key);
+    return token;
+  }
+  return token;
 }
 
 export { setToken, getToken };

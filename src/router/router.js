@@ -11,6 +11,8 @@ import AdminPage from "../pages/AdminPage/AdminPage";
 import AdminNotes from "../pages/AdminPage/AdminNotes/AdminNotes";
 import Profile from "../pages/Profile/Profile";
 import UpdateProfile from "../pages/UpdateProfile/UpdateProfile";
+import Settings from "../pages/Settings/Settings";
+import Files from "../pages/Files/Files";
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +26,10 @@ export const router = createBrowserRouter([
       {
         path: "notes",
         Component: NotesPage,
+      },
+      {
+        path: "files",
+        Component: Files,
       },
       {
         path: "register",
@@ -40,6 +46,10 @@ export const router = createBrowserRouter([
       {
         path: "update-profile",
         Component: UpdateProfile,
+      },
+      {
+        path: "settings",
+        Component: Settings,
       },
       {
         path: "*",

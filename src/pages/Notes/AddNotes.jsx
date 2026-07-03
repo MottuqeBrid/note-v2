@@ -3,12 +3,13 @@ import { useState } from "react";
 import NotesForm from "./NotesForm";
 import useAxios from "./../../lib/useAxios";
 import Swal from "sweetalert2";
+import { getToken } from "../../lib/localstoreage";
 
 const AddNotes = ({ setShowAddNoteForm, fetchNotes }) => {
   const [isLoading, setIsLoading] = useState(false);
   const app = useAxios();
 
-  const getToken = () => localStorage.getItem("token") ?? "";
+  const token = getToken();
 
   const uploadFiles = async (files) => {
     if (!files || files.length === 0) return [];
@@ -16,7 +17,7 @@ const AddNotes = ({ setShowAddNoteForm, fetchNotes }) => {
     files.forEach((file) => formData.append("files", file));
     const { data } = await app.post(`upload`, formData, {
       headers: {
-        Authorization: `Bearer ${getToken()}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
     });
@@ -57,7 +58,7 @@ const AddNotes = ({ setShowAddNoteForm, fetchNotes }) => {
       };
 
       const { data: response } = await app.post(`note`, payload, {
-        headers: { Authorization: `Bearer ${getToken()}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (response.success) {
         Swal.fire({

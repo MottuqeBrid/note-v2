@@ -2,14 +2,14 @@ import { useState } from "react";
 import useAxios from "../../lib/useAxios";
 import Swal from "sweetalert2";
 import NotesForm from "./NotesForm";
+import { getToken } from "../../lib/localstoreage";
 
 const EditNote = ({ note, setShowEditNoteForm, fetchNotes }) => {
   const [isLoading, setIsLoading] = useState(false);
   const app = useAxios();
+  const token = getToken();
 
-  const getToken = () => localStorage.getItem("token") ?? "";
-
-  const authHeader = () => ({ Authorization: `Bearer ${getToken()}` });
+  const authHeader = () => ({ Authorization: `Bearer ${token}` });
 
   const uploadFiles = async (files) => {
     if (!files?.length) return [];

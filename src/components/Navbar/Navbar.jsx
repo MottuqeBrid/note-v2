@@ -3,22 +3,54 @@ import Logo from "./../Logo/Logo";
 import ThemeToggle from "./../ThemeToggle/ThemeToggle";
 import { useAuth } from "../../hooks/useAuth";
 
-const navLinks = (
-  <>
-    <li>
-      <NavLink to="/">Home</NavLink>
-    </li>
-    <li>
-      <NavLink to="/notes">Notes</NavLink>
-    </li>
-    <li>
-      <NavLink to="/admin">Admin</NavLink>
-    </li>
-  </>
-);
-
 const Navbar = ({ page = "home" }) => {
-  const { user, logout } = useAuth();
+  const { user, logout, loading } = useAuth();
+  const navLinks = (
+    <>
+      <li>
+        <NavLink to="/">Home</NavLink>
+      </li>
+      <li>
+        <NavLink to="/notes">Notes</NavLink>
+      </li>
+      <li>
+        <NavLink to="/files">Files</NavLink>
+      </li>
+      {user?.role === "admin" && (
+        <li>
+          <NavLink to="/admin">Admin</NavLink>
+        </li>
+      )}
+    </>
+  );
+  if (loading) {
+    return (
+      <div className="bg-base-100 shadow-sm sticky top-0 z-50">
+        <div className="navbar max-w-7xl mx-auto">
+          <div className="navbar-start">
+            <Logo cls={page === "admin" ? "left-20 absolute" : ""} />
+          </div>
+          <div className="navbar-end gap-2">
+            <ThemeToggle />
+            <div
+              // tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-circle avatar"
+            >
+              <div className="w-10 rounded-full">
+                <img
+                  alt="User Avatar"
+                  src={
+                    "https://w7.pngwing.com/pngs/613/636/png-transparent-computer-icons-user-profile-male-avatar-avatar-heroes-logo-black-thumbnail.png"
+                  }
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="bg-base-100 shadow-sm sticky top-0 z-50">
       <div className="navbar max-w-7xl mx-auto">
@@ -72,7 +104,7 @@ const Navbar = ({ page = "home" }) => {
                   <img
                     alt="User Avatar"
                     src={
-                      user?.profile_picture ||
+                      user?.profilePicture ||
                       "https://w7.pngwing.com/pngs/613/636/png-transparent-computer-icons-user-profile-male-avatar-avatar-heroes-logo-black-thumbnail.png"
                     }
                   />
@@ -85,9 +117,9 @@ const Navbar = ({ page = "home" }) => {
                 <li>
                   <NavLink to="/profile">Profile</NavLink>
                 </li>
-                {/* <li>
+                <li>
                   <NavLink to="/settings">Settings</NavLink>
-                </li> */}
+                </li>
                 <li>
                   <button onClick={logout} className="btn btn-ghost">
                     Logout

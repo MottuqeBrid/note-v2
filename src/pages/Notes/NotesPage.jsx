@@ -10,6 +10,7 @@ import { FaPlus } from "react-icons/fa";
 import { FiRefreshCcw, FiSearch } from "react-icons/fi";
 import { toast } from "react-toastify";
 import EditNote from "./EditNote";
+import { getToken } from "../../lib/localstoreage";
 
 const NotesPage = () => {
   const [showAddNoteForm, setShowAddNoteForm] = useState(false);
@@ -24,7 +25,7 @@ const NotesPage = () => {
 
   const fetchNotes = async (notify = false) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = getToken("token");
       const { data: response } = await app.get("/note", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -49,7 +50,7 @@ const NotesPage = () => {
           await fetchNotes();
           return;
         }
-        const token = localStorage.getItem("token");
+        const token = getToken("token");
         const { data: response } = await app.get(
           `/note/search?query=${search}`,
           {
