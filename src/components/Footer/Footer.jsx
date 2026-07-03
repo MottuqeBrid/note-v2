@@ -1,202 +1,247 @@
 import {
-  FiGithub,
-  FiTwitter,
-  FiLinkedin,
-  FiMail,
-  FiHeart,
+  FiArrowRight,
   FiFileText,
   FiFolder,
-  FiShield,
+  FiGithub,
+  FiHeart,
   FiInfo,
+  FiLinkedin,
+  FiLock,
+  FiMail,
+  FiSettings,
+  FiShield,
+  FiTwitter,
+  FiUser,
 } from "react-icons/fi";
 import { Link } from "react-router";
+import { useMemo } from "react";
 import { useAuth } from "../../hooks/useAuth";
-import { useEffect, useState } from "react";
+import Logo from "../Logo/Logo";
 
-const Footer = () => {
-  const [footerAccountLinks, setFooterAccountLinks] = useState([]);
-  const { user, loading } = useAuth();
-  const currentYear = new Date().getFullYear();
+const socialLinks = [
+  { label: "GitHub", href: "https://github.com", Icon: FiGithub },
+  { label: "Twitter", href: "https://twitter.com", Icon: FiTwitter },
+  { label: "LinkedIn", href: "https://linkedin.com", Icon: FiLinkedin },
+  { label: "Email", href: "mailto:contact@mnote.com", Icon: FiMail },
+];
 
-  const updatedFooterLinks = () => {
-    if (user && !loading && user?.role == "admin") {
-      setFooterAccountLinks([
-        { label: "Profile", to: "/profile" },
-        { label: "Settings", to: "/settings" },
-        { label: "Admin", to: "/admin" },
-      ]);
-    } else if (!user && !loading) {
-      setFooterAccountLinks([
-        { label: "Login", to: "/login" },
-        { label: "Sign Up", to: "/signup" },
-      ]);
-    } else if (user && !loading && user?.role !== "admin") {
-      setFooterAccountLinks([
-        { label: "Profile", to: "/profile" },
-        { label: "Settings", to: "/settings" },
-      ]);
-    }
-  };
-  useEffect(() => {
-    return () => updatedFooterLinks();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, loading]);
+const legalLinks = [
+  { label: "Privacy Policy", to: "/privacy" },
+  { label: "Terms of Service", to: "/terms" },
+  { label: "Cookie Policy", to: "/cookies" },
+  { label: "About Us", to: "/about", Icon: FiInfo },
+];
 
+const featureLinks = [
+  { icon: FiFileText, label: "Notes", to: "/notes" },
+  { icon: FiFolder, label: "Files", to: "/files" },
+  { icon: FiShield, label: "Secure Storage", to: "/notes" },
+];
+
+const getAccountLinks = (user) => {
+  if (!user) {
+    return [
+      { icon: FiUser, label: "Login", to: "/login" },
+      { icon: FiArrowRight, label: "Register", to: "/register" },
+    ];
+  }
+
+  const links = [
+    { icon: FiUser, label: "Profile", to: "/profile" },
+    { icon: FiSettings, label: "Settings", to: "/settings" },
+  ];
+
+  if (user.role === "admin") {
+    links.push({ icon: FiLock, label: "Admin", to: "/admin" });
+  }
+
+  return links;
+};
+
+function FooterSkeleton() {
   return (
-    <footer className="bg-base-200 border-t border-base-300 mt-auto">
-      <div className="max-w-6xl mx-auto px-6 py-10">
-        <div
-          className={`grid grid-cols-1 md:grid-cols-${user && !loading ? "4" : "2"} gap-8`}
-        >
-          {/* ─── Brand ─── */}
-          <div className="md:col-span-1">
-            <Link to="/" className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <FiFileText className="text-white text-lg" />
-              </div>
-              <span className="text-xl font-bold text-primary">M-NOTE</span>
-            </Link>
-            <p className="text-sm text-gray-500 leading-relaxed">
-              A simple and powerful note-taking app to organize your thoughts,
-              code, and files in one place.
-            </p>
-            {/* Social Links */}
-            <div className="flex gap-3 mt-4">
-              <a
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-circle btn-ghost btn-sm text-gray-500 hover:text-primary"
-              >
-                <FiGithub className="text-lg" />
-              </a>
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-circle btn-ghost btn-sm text-gray-500 hover:text-primary"
-              >
-                <FiTwitter className="text-lg" />
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-circle btn-ghost btn-sm text-gray-500 hover:text-primary"
-              >
-                <FiLinkedin className="text-lg" />
-              </a>
-              <a
-                href="mailto:contact@mnote.com"
-                className="btn btn-circle btn-ghost btn-sm text-gray-500 hover:text-primary"
-              >
-                <FiMail className="text-lg" />
-              </a>
+    <footer className="mt-auto border-t border-base-300 bg-base-100">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+          <div className="space-y-4 md:col-span-2">
+            <div className="skeleton h-10 w-44 rounded-lg" />
+            <div className="skeleton h-4 w-full max-w-md" />
+            <div className="skeleton h-4 w-3/4 max-w-sm" />
+            <div className="flex gap-3">
+              <div className="skeleton h-9 w-9 rounded-full" />
+              <div className="skeleton h-9 w-9 rounded-full" />
+              <div className="skeleton h-9 w-9 rounded-full" />
+              <div className="skeleton h-9 w-9 rounded-full" />
             </div>
           </div>
-
-          {/* ─── Features ─── */}
-          {user && !loading && (
-            <div>
-              <h3 className="font-bold text-sm uppercase tracking-wide mb-4 text-gray-600">
-                Features
-              </h3>
-              <ul className="flex flex-col gap-2">
-                {[
-                  { icon: <FiFileText />, label: "Notes", to: "/notes" },
-                  { icon: <FiFolder />, label: "Folders", to: "/folders" },
-                  { icon: <FiShield />, label: "Secure Storage", to: "/notes" },
-                ].map((item) => (
-                  <li key={item.label}>
-                    <Link
-                      to={item.to}
-                      className="flex items-center gap-2 text-sm text-gray-500 hover:text-primary transition-colors"
-                    >
-                      <span className="text-primary">{item.icon}</span>
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* ─── Account ─── */}
-          {user && !loading && (
-            <div>
-              <h3 className="font-bold text-sm uppercase tracking-wide mb-4 text-gray-600">
-                Account
-              </h3>
-              <ul className="flex flex-col gap-2">
-                {footerAccountLinks.map((item) => (
-                  <li key={item.label}>
-                    <Link
-                      to={item.to}
-                      className="text-sm text-gray-500 hover:text-primary transition-colors"
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* ─── Legal ─── */}
-          <div>
-            <h3 className="font-bold text-sm uppercase tracking-wide mb-4 text-gray-600">
-              Legal
-            </h3>
-            <ul className="flex flex-col gap-2">
-              {[
-                { label: "Privacy Policy", to: "/privacy" },
-                { label: "Terms of Service", to: "/terms" },
-                { label: "Cookie Policy", to: "/cookies" },
-              ].map((item) => (
-                <li key={item.label}>
-                  <Link
-                    to={item.to}
-                    className="text-sm text-gray-500 hover:text-primary transition-colors"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-
-            {/* About */}
-            <div className="mt-4">
-              <Link
-                to="/about"
-                className="flex items-center gap-1 text-sm text-gray-500 hover:text-primary transition-colors"
-              >
-                <FiInfo /> About Us
-              </Link>
-            </div>
+          <div className="space-y-3">
+            <div className="skeleton h-4 w-24" />
+            <div className="skeleton h-4 w-32" />
+            <div className="skeleton h-4 w-28" />
+            <div className="skeleton h-4 w-36" />
+          </div>
+          <div className="space-y-3">
+            <div className="skeleton h-4 w-24" />
+            <div className="skeleton h-4 w-32" />
+            <div className="skeleton h-4 w-28" />
+            <div className="skeleton h-4 w-36" />
           </div>
         </div>
+      </div>
+    </footer>
+  );
+}
 
-        {/* ─── Divider ─── */}
-        <div className="divider my-6" />
+function FooterLink({ item, index }) {
+  const Icon = item.icon || item.Icon;
 
-        {/* ─── Bottom Bar ─── */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-gray-500">
-          <p>
-            © {currentYear}{" "}
-            <span className="text-primary font-semibold">M-NOTE</span>. All
-            rights reserved.
-          </p>
-          <p className="flex items-center gap-1">
-            Made with <FiHeart className="text-red-400" /> by{" "}
-            <a
-              href="https://brid.bd"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline"
-            >
-              Mottuqe
-            </a>
-          </p>
+  return (
+    <li
+      className="animate-[footer-rise_0.55s_ease-out_both]"
+      style={{ animationDelay: `${index * 55}ms` }}
+    >
+      <Link
+        to={item.to}
+        className="group flex w-fit items-center gap-2 rounded-md py-1 text-sm text-base-content/60 transition duration-200 hover:translate-x-1 hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      >
+        {Icon && (
+          <span className="grid h-7 w-7 place-items-center rounded-md bg-primary/10 text-primary transition duration-200 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-content">
+            <Icon className="h-4 w-4" />
+          </span>
+        )}
+        <span>{item.label}</span>
+      </Link>
+    </li>
+  );
+}
+
+function FooterColumn({ title, links }) {
+  return (
+    <div>
+      <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-base-content/50">
+        {title}
+      </h3>
+      <ul className="flex flex-col gap-1.5">
+        {links.map((item, index) => (
+          <FooterLink key={item.label} item={item} index={index} />
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+const Footer = () => {
+  const { user, loading } = useAuth();
+  const currentYear = new Date().getFullYear();
+  const accountLinks = useMemo(() => getAccountLinks(user), [user]);
+  const initials = user?.name
+    ?.split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+  if (loading) return <FooterSkeleton />;
+
+  return (
+    <footer className="mt-auto overflow-hidden border-t border-base-300 bg-base-100">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-12">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.4fr_0.8fr_0.8fr_0.8fr]">
+          <div className="animate-[footer-rise_0.6s_ease-out_both]">
+            <div className="rounded-lg border border-base-300 bg-base-200/45 p-5 transition duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10">
+              <Logo />
+              <p className="mt-4 max-w-md text-sm leading-6 text-base-content/60">
+                A focused workspace for notes, code snippets, and file folders.
+              </p>
+
+              <div className="mt-5 flex flex-wrap items-center gap-3">
+                {socialLinks.map(({ label, href, Icon }, index) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target={href.startsWith("mailto:") ? undefined : "_blank"}
+                    rel={
+                      href.startsWith("mailto:")
+                        ? undefined
+                        : "noopener noreferrer"
+                    }
+                    aria-label={label}
+                    className="group grid h-10 w-10 place-items-center rounded-full border border-base-300 bg-base-100 text-base-content/60 transition duration-300 hover:-translate-y-1 hover:rotate-3 hover:border-primary hover:bg-primary hover:text-primary-content focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    style={{ animationDelay: `${index * 70}ms` }}
+                  >
+                    <Icon className="h-4 w-4 transition duration-300 group-hover:scale-110" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <FooterColumn title="Features" links={featureLinks} />
+          <FooterColumn title="Account" links={accountLinks} />
+          <FooterColumn title="Legal" links={legalLinks} />
+        </div>
+
+        <div className="my-8 h-px bg-base-300" />
+
+        <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-3">
+            {user ? (
+              <Link
+                to="/profile"
+                className="group flex items-center gap-3 rounded-lg border border-base-300 bg-base-200/60 px-3 py-2 transition duration-300 hover:-translate-y-1 hover:border-primary/50 hover:bg-primary/10"
+              >
+                <div className="relative">
+                  <div className="absolute inset-0 rounded-full bg-primary/25 animate-[footer-ping_1.8s_ease-out_infinite]" />
+                  <div className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-full bg-primary text-sm font-bold text-primary-content">
+                    {user.profilePicture ? (
+                      <img
+                        src={user.profilePicture}
+                        alt={user.name || "User"}
+                        className="h-full w-full object-cover transition duration-300 group-hover:scale-110"
+                      />
+                    ) : (
+                      initials || <FiUser className="h-5 w-5" />
+                    )}
+                  </div>
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold">
+                    {user.name || "Your account"}
+                  </p>
+                  <p className="text-xs text-base-content/50">
+                    {user.role === "admin" ? "Admin workspace" : "Workspace"}
+                  </p>
+                </div>
+              </Link>
+            ) : (
+              <Link
+                to="/register"
+                className="group inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition duration-300 hover:-translate-y-1 hover:bg-primary hover:text-primary-content"
+              >
+                Get started
+                <FiArrowRight className="transition duration-300 group-hover:translate-x-1" />
+              </Link>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-2 text-sm text-base-content/55 md:items-end">
+            <p>
+              &copy; {currentYear}{" "}
+              <span className="font-semibold text-primary">M-Note</span>. All
+              rights reserved.
+            </p>
+            <p className="flex items-center gap-1">
+              Made with <FiHeart className="animate-[footer-heart_1.5s_ease-in-out_infinite] text-red-400" /> by{" "}
+              <a
+                href="https://brid.bd"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-primary transition hover:underline"
+              >
+                Mottuqe
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </footer>
