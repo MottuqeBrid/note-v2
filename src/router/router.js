@@ -14,6 +14,7 @@ import UpdateProfile from "../pages/UpdateProfile/UpdateProfile";
 import Settings from "../pages/Settings/Settings";
 import Files from "../pages/Files/Files";
 import SharedFilesPage from "../pages/SharedFilesPage/SharedFilesPage";
+import AdminFiles from "../pages/AdminPage/AdminFiles/AdminFiles";
 
 export const router = createBrowserRouter([
   {
@@ -80,7 +81,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "files",
-        Component: AdminNotes,
+        Component: AdminFiles,
       },
       {
         path: "*",
