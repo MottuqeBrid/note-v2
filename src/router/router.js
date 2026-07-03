@@ -13,6 +13,7 @@ import Profile from "../pages/Profile/Profile";
 import UpdateProfile from "../pages/UpdateProfile/UpdateProfile";
 import Settings from "../pages/Settings/Settings";
 import Files from "../pages/Files/Files";
+import SharedFilesPage from "../pages/SharedFilesPage/SharedFilesPage";
 
 export const router = createBrowserRouter([
   {
@@ -28,8 +29,12 @@ export const router = createBrowserRouter([
         Component: NotesPage,
       },
       {
-        path: "files",
+        path: "my-files",
         Component: Files,
+      },
+      {
+        path: "shared-files",
+        Component: SharedFilesPage,
       },
       {
         path: "register",
@@ -71,6 +76,10 @@ export const router = createBrowserRouter([
       },
       {
         path: "notes",
+        Component: AdminNotes,
+      },
+      {
+        path: "files",
         Component: AdminNotes,
       },
       {

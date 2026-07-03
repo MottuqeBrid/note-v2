@@ -62,20 +62,6 @@ const Profile = () => {
 
   if (loading || !profile) return <Loading />;
 
-  if (!user) {
-    return (
-      <section className="flex min-h-[60vh] items-center justify-center p-4 text-neutral">
-        <div className="rounded-xl border border-primary/20 bg-base-100 p-8 text-center shadow-sm">
-          <FiUser className="mx-auto mb-3 text-primary" size={36} />
-          <h1 className="text-xl font-bold">Profile not found</h1>
-          <p className="mt-1 text-sm text-neutral/60">
-            Please log in again to view your profile.
-          </p>
-        </div>
-      </section>
-    );
-  }
-
   return (
     <section className="space-y-6 p-4 text-neutral md:p-6">
       <div className="rounded-xl border border-primary/20 bg-base-100 p-6 shadow-sm">

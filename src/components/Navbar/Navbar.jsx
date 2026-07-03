@@ -10,12 +10,19 @@ const Navbar = ({ page = "home" }) => {
       <li>
         <NavLink to="/">Home</NavLink>
       </li>
-      <li>
-        <NavLink to="/notes">Notes</NavLink>
-      </li>
-      <li>
-        <NavLink to="/files">Files</NavLink>
-      </li>
+      {user && (
+        <>
+          <li>
+            <NavLink to="/notes">Notes</NavLink>
+          </li>
+          <li>
+            <NavLink to="/my-files">My Files</NavLink>
+          </li>
+          <li>
+            <NavLink to="/shared-files">Shared Files</NavLink>
+          </li>
+        </>
+      )}
       {user?.role === "admin" && (
         <li>
           <NavLink to="/admin">Admin</NavLink>

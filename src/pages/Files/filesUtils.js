@@ -1,4 +1,5 @@
 // src/pages/Files/filesUtils.js
+import { getToken } from "../../lib/localstoreage";
 
 export const FILE_CATEGORIES = ["file", "image", "video", "audio", "other"];
 
@@ -34,7 +35,7 @@ export const emptyForm = {
 };
 
 export const getAuthHeaders = () => {
-  const token = localStorage.getItem("token");
+  const token = getToken("token");
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 

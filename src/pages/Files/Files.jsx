@@ -13,7 +13,7 @@ import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { useAuth } from "../../hooks/useAuth";
 import useAxios from "../../lib/useAxios";
-import FileCard from "./FileCard";
+import FileCard from "../../components/FileCard/FileCard";
 import UploadGroup from "./UploadGroup";
 import {
   emptyForm,

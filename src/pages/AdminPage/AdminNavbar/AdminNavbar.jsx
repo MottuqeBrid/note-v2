@@ -11,7 +11,7 @@ import {
 } from "react-icons/fi";
 
 const AdminNavbar = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   const sidebarRef = useRef(null);
 
@@ -56,7 +56,7 @@ const AdminNavbar = () => {
       {isOpen && (
         <aside
           ref={sidebarRef}
-          className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col border-r border-primary/20 bg-base-100 px-4 py-5 text-neutral shadow-xl transition"
+          className="fixed left-0 top-0 z-70 flex h-screen w-64 flex-col border-r border-primary/20 bg-base-100 px-4 py-5 text-neutral shadow-xl transition"
         >
           <div className="mb-8 flex items-center justify-between">
             <NavLink
@@ -80,6 +80,10 @@ const AdminNavbar = () => {
           </div>
 
           <nav className="flex flex-1 flex-col gap-1">
+            <NavLink to="/admin/files" className={navClass}>
+              <FiFileText />
+              All Files
+            </NavLink>
             <NavLink to="/admin/notes" className={navClass}>
               <FiFileText />
               All Notes
@@ -98,7 +102,7 @@ const AdminNavbar = () => {
           </nav>
 
           <div className="border-t border-primary/20 pt-4">
-            <NavLink to="/admin/settings" className={navClass}>
+            <NavLink to="/settings" className={navClass}>
               <FiMoon />
               Settings
             </NavLink>
