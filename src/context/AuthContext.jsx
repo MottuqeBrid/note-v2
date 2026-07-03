@@ -12,7 +12,6 @@ export const AuthContext = createContext(null);
 
 const fetchUser = async () => {
   const { data } = await axiosInstance.get("user/me");
-  console.log(data);
   return data.user;
 };
 

@@ -10,6 +10,7 @@ import Users from "../pages/AdminPage/Users/Users";
 import AdminPage from "../pages/AdminPage/AdminPage";
 import AdminNotes from "../pages/AdminPage/AdminNotes/AdminNotes";
 import Profile from "../pages/Profile/Profile";
+import UpdateProfile from "../pages/UpdateProfile/UpdateProfile";
 
 export const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ export const router = createBrowserRouter([
       {
         path: "profile",
         Component: Profile,
+      },
+      {
+        path: "update-profile",
+        Component: UpdateProfile,
       },
       {
         path: "*",
