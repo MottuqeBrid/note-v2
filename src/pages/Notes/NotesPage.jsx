@@ -26,7 +26,7 @@ const NotesPage = () => {
   const fetchNotes = async (notify = false) => {
     try {
       const token = getToken("token");
-      const { data: response } = await app.get("/note", {
+      const { data: response } = await app.get("note", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -52,7 +52,7 @@ const NotesPage = () => {
         }
         const token = getToken("token");
         const { data: response } = await app.get(
-          `/note/search?query=${search}`,
+          `note/search?query=${search}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
