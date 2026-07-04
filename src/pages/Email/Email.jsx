@@ -18,7 +18,7 @@ import MailboxList from "./MailboxList";
 import MessageList from "./MessageList";
 import MessagePreview from "./MessagePreview";
 
-const EMAIL_DOMAINS = ["brid.bd", "toytree.top"];
+const EMAIL_DOMAINS = ["brid.bd"];
 
 const formatDate = (value) =>
   value
