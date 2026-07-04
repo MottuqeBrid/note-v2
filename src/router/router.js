@@ -15,6 +15,7 @@ import Settings from "../pages/Settings/Settings";
 import Files from "../pages/Files/Files";
 import SharedFilesPage from "../pages/SharedFilesPage/SharedFilesPage";
 import AdminFiles from "../pages/AdminPage/AdminFiles/AdminFiles";
+import Email from "../pages/Email/Email";
 
 export const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ export const router = createBrowserRouter([
       {
         path: "update-profile",
         Component: UpdateProfile,
+      },
+      {
+        path: "email",
+        Component: Email,
       },
       {
         path: "settings",

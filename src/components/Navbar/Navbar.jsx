@@ -21,6 +21,9 @@ const Navbar = ({ page = "home" }) => {
           <li>
             <NavLink to="/shared-files">Shared Files</NavLink>
           </li>
+          <li>
+            <NavLink to="/email">Email</NavLink>
+          </li>
         </>
       )}
       {user?.role === "admin" && (
