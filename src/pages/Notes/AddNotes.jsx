@@ -9,7 +9,7 @@ const AddNotes = ({ setShowAddNoteForm, fetchNotes }) => {
   const [isLoading, setIsLoading] = useState(false);
   const app = useAxios();
 
-  const token = getToken();
+  const token = getToken("token");
 
   const uploadFiles = async (files) => {
     if (!files || files.length === 0) return [];

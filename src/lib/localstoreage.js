@@ -2,7 +2,7 @@ function setToken(key, value) {
   localStorage.setItem(key, value.replace(/"/g, ""));
 }
 
-function getToken(key) {
+function getToken(key = "token") {
   const token = localStorage.getItem(key);
   if (!token) {
     const token = sessionStorage.getItem(key);
