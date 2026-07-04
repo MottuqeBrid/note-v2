@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 import {
   FiAlertCircle,
+  FiClock,
   FiInbox,
   FiMail,
   FiPaperclip,
@@ -19,6 +20,9 @@ import MessageList from "./MessageList";
 import MessagePreview from "./MessagePreview";
 
 const EMAIL_DOMAINS = ["brid.bd"];
+const DEFAULT_RELOAD_SECONDS = 15;
+const MIN_RELOAD_SECONDS = 5;
+const MAX_RELOAD_SECONDS = 300;
 
 const formatDate = (value) =>
   value
@@ -40,6 +44,15 @@ const getAttachmentName = (attachment, index) =>
   attachment?.originalName ||
   `Attachment ${index + 1}`;
 
+const formatLastRefreshed = (value) =>
+  value
+    ? value.toLocaleTimeString(undefined, {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      })
+    : "Not refreshed yet";
+
 const Email = () => {
   const app = useAxios();
   const navigate = useNavigate();
@@ -57,41 +70,61 @@ const Email = () => {
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [addingEmail, setAddingEmail] = useState(false);
   const [deletingId, setDeletingId] = useState("");
+  const [autoReloadEnabled, setAutoReloadEnabled] = useState(true);
+  const [reloadSeconds, setReloadSeconds] = useState(DEFAULT_RELOAD_SECONDS);
+  const [lastRefreshedAt, setLastRefreshedAt] = useState(null);
 
   const authHeaders = useMemo(
     () => (token ? { Authorization: `Bearer ${token}` } : {}),
     [token],
   );
 
+  const reloadIntervalSeconds = useMemo(() => {
+    const numericValue = Number(reloadSeconds);
+    if (!Number.isFinite(numericValue) || numericValue <= 0) {
+      return DEFAULT_RELOAD_SECONDS;
+    }
+
+    return Math.min(
+      MAX_RELOAD_SECONDS,
+      Math.max(MIN_RELOAD_SECONDS, Math.round(numericValue)),
+    );
+  }, [reloadSeconds]);
+
   // ✅ fetchMessages — no loop dependency
   const fetchMessages = useCallback(
-    async (mail) => {
+    async (mail, options = {}) => {
+      const { showError = true, silent = false } = options;
       if (!mail) {
         setMessages([]);
         setSelectedMessage(null);
         return;
       }
       try {
-        setLoadingMessages(true);
+        if (!silent) setLoadingMessages(true);
         const { data } = await app.get(`email/${mail}`, {
           headers: authHeaders,
         });
         const inbox = Array.isArray(data?.emails) ? data.emails : [];
         setMessages(inbox);
         setSelectedMessage(inbox[0] || null);
+        setLastRefreshedAt(new Date());
       } catch (error) {
         if (error.response?.status === 404) {
           setMessages([]);
           setSelectedMessage(null);
+          setLastRefreshedAt(new Date());
           return;
         }
-        Swal.fire(
-          "Error",
-          error.response?.data?.message || "Failed to load emails",
-          "error",
-        );
+        if (showError) {
+          Swal.fire(
+            "Error",
+            error.response?.data?.message || "Failed to load emails",
+            "error",
+          );
+        }
       } finally {
-        setLoadingMessages(false);
+        if (!silent) setLoadingMessages(false);
       }
     },
     [app, authHeaders],
@@ -99,14 +132,16 @@ const Email = () => {
 
   // ✅ fetchMailboxes — selectedMailbox সরানো dep থেকে
   const fetchMailboxes = useCallback(
-    async (notify = false) => {
+    async (notify = false, options = {}) => {
+      const { showError = true, silent = false } = options;
       try {
-        setLoadingMailboxes(true);
+        if (!silent) setLoadingMailboxes(true);
         const { data } = await app.get("email", { headers: authHeaders });
         const nextMailboxes = Array.isArray(data?.emails) ? data.emails : [];
 
         setMailboxes(nextMailboxes);
         if (notify) toast.success(data?.message || "Email addresses refreshed");
+        setLastRefreshedAt(new Date());
 
         // functional update — dep এ selectedMailbox লাগবে না
         setSelectedMailbox((prev) => {
@@ -115,16 +150,28 @@ const Email = () => {
             : nextMailboxes[0] || "";
         });
       } catch (error) {
-        Swal.fire(
-          "Error",
-          error.response?.data?.message || "Failed to load email addresses",
-          "error",
-        );
+        if (showError) {
+          Swal.fire(
+            "Error",
+            error.response?.data?.message || "Failed to load email addresses",
+            "error",
+          );
+        }
       } finally {
-        setLoadingMailboxes(false);
+        if (!silent) setLoadingMailboxes(false);
       }
     },
     [app, authHeaders], // ✅ selectedMailbox নেই
+  );
+
+  const refreshInbox = useCallback(
+    async (notify = false, options = {}) => {
+      await fetchMailboxes(notify, options);
+      if (selectedMailbox) {
+        await fetchMessages(selectedMailbox, options);
+      }
+    },
+    [fetchMailboxes, fetchMessages, selectedMailbox],
   );
 
   // auth guard
@@ -148,6 +195,31 @@ const Email = () => {
       lode();
     }
   }, [selectedMailbox, fetchMessages]);
+
+  useEffect(() => {
+    if (authLoading || !user || !autoReloadEnabled) return;
+
+    const intervalId = setInterval(() => {
+      refreshInbox(false, { showError: false, silent: true });
+    }, reloadIntervalSeconds * 1000);
+
+    return () => clearInterval(intervalId);
+  }, [
+    authLoading,
+    autoReloadEnabled,
+    refreshInbox,
+    reloadIntervalSeconds,
+    user,
+  ]);
+
+  const handleReloadSecondsChange = (event) => {
+    const { value } = event.target;
+    setReloadSeconds(value === "" ? "" : Number(value));
+  };
+
+  const handleReloadSecondsBlur = () => {
+    setReloadSeconds(reloadIntervalSeconds);
+  };
 
   const filteredMessages = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -281,19 +353,53 @@ const Email = () => {
               you no longer need.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => fetchMailboxes(true)}
-            className="btn btn-primary gap-2"
-            disabled={loadingMailboxes || loadingMessages}
-          >
-            {loadingMailboxes || loadingMessages ? (
-              <span className="loading loading-spinner loading-sm" />
-            ) : (
-              <FiRefreshCw />
-            )}
-            Refresh
-          </button>
+          <div className="flex flex-col gap-3 lg:items-end">
+            <div className="flex flex-col gap-3 rounded-lg border border-primary/10 bg-primary/5 p-3 text-sm sm:flex-row sm:items-center">
+              <label className="flex items-center gap-2 font-semibold">
+                <input
+                  type="checkbox"
+                  className="toggle toggle-primary toggle-sm"
+                  checked={autoReloadEnabled}
+                  onChange={(event) =>
+                    setAutoReloadEnabled(event.target.checked)
+                  }
+                />
+                Auto reload
+              </label>
+              <label className="flex items-center gap-2 text-neutral/70">
+                <FiClock className="text-primary" />
+                <span>Every</span>
+                <input
+                  type="number"
+                  min={MIN_RELOAD_SECONDS}
+                  max={MAX_RELOAD_SECONDS}
+                  value={reloadSeconds}
+                  onChange={handleReloadSecondsChange}
+                  onBlur={handleReloadSecondsBlur}
+                  disabled={!autoReloadEnabled}
+                  className="input input-bordered input-sm w-20 text-center"
+                  aria-label="Auto reload interval in seconds"
+                />
+                <span>sec</span>
+              </label>
+              <span className="text-xs text-neutral/50">
+                Last: {formatLastRefreshed(lastRefreshedAt)}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => refreshInbox(true)}
+              className="btn btn-primary gap-2"
+              disabled={loadingMailboxes || loadingMessages}
+            >
+              {loadingMailboxes || loadingMessages ? (
+                <span className="loading loading-spinner loading-sm" />
+              ) : (
+                <FiRefreshCw />
+              )}
+              Refresh
+            </button>
+          </div>
         </div>
 
         {/* Stats */}
