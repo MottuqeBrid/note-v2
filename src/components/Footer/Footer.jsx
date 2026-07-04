@@ -9,7 +9,6 @@ import {
   FiLock,
   FiMail,
   FiSettings,
-  FiShield,
   FiTwitter,
   FiUser,
 } from "react-icons/fi";
@@ -17,6 +16,7 @@ import { Link } from "react-router";
 import { useMemo } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import Logo from "../Logo/Logo";
+import { MdPublic } from "react-icons/md";
 
 const socialLinks = [
   { label: "GitHub", href: "https://github.com", Icon: FiGithub },
@@ -34,8 +34,8 @@ const legalLinks = [
 
 const featureLinks = [
   { icon: FiFileText, label: "Notes", to: "/notes" },
-  { icon: FiFolder, label: "Files", to: "/files" },
-  { icon: FiShield, label: "Secure Storage", to: "/notes" },
+  { icon: FiFolder, label: "Files", to: "/my-files" },
+  { icon: MdPublic, label: "Shared Files", to: "/shared-files" },
 ];
 
 const getAccountLinks = (user) => {
@@ -231,7 +231,9 @@ const Footer = () => {
               rights reserved.
             </p>
             <p className="flex items-center gap-1">
-              Made with <FiHeart className="animate-[footer-heart_1.5s_ease-in-out_infinite] text-red-400" /> by{" "}
+              Made with{" "}
+              <FiHeart className="animate-[footer-heart_1.5s_ease-in-out_infinite] text-red-400" />{" "}
+              by{" "}
               <a
                 href="https://brid.bd"
                 target="_blank"
