@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router";
 import {
-  FiBell,
   FiFileText,
+  FiMail,
   FiMenu,
   FiMoon,
   FiUsers,
@@ -89,15 +89,14 @@ const AdminNavbar = () => {
               All Notes
             </NavLink>
 
+            <NavLink to="/admin/emails" className={navClass}>
+              <FiMail />
+              All Emails
+            </NavLink>
+
             <NavLink to="/admin/users" className={navClass}>
               <FiUsers />
               All Users
-            </NavLink>
-
-            <NavLink to="/admin/notifications" className={navClass}>
-              <FiBell />
-              Notifications
-              <span className="ml-auto h-2 w-2 rounded-full bg-accent" />
             </NavLink>
           </nav>
 

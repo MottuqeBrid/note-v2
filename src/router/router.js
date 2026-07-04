@@ -16,6 +16,7 @@ import Files from "../pages/Files/Files";
 import SharedFilesPage from "../pages/SharedFilesPage/SharedFilesPage";
 import AdminFiles from "../pages/AdminPage/AdminFiles/AdminFiles";
 import Email from "../pages/Email/Email";
+import Emails from "../pages/AdminPage/Emails/Emails";
 
 export const router = createBrowserRouter([
   {
@@ -90,7 +91,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "emails",
-        Component: AdminFiles,
+        Component: Emails,
       },
       {
         path: "*",

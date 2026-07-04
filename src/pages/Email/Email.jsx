@@ -18,6 +18,8 @@ import MailboxList from "./MailboxList";
 import MessageList from "./MessageList";
 import MessagePreview from "./MessagePreview";
 
+const EMAIL_DOMAINS = ["brid.bd", "toytree.top"];
+
 const formatDate = (value) =>
   value
     ? new Date(value).toLocaleString(undefined, {
@@ -49,6 +51,7 @@ const Email = () => {
   const [messages, setMessages] = useState([]);
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [newEmail, setNewEmail] = useState("");
+  const [selectedDomain, setSelectedDomain] = useState(EMAIL_DOMAINS[0]);
   const [search, setSearch] = useState("");
   const [loadingMailboxes, setLoadingMailboxes] = useState(true);
   const [loadingMessages, setLoadingMessages] = useState(false);
@@ -180,7 +183,17 @@ const Email = () => {
       toast.error("Please enter only the username part (before @)");
       return;
     }
-    const email = newEmail.split("@")[0].trim().toLowerCase() + "@brid.bd";
+    if (!EMAIL_DOMAINS.includes(selectedDomain)) {
+      toast.error("Please select a valid email domain");
+      return;
+    }
+
+    const username = newEmail
+      .split("@")[0]
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9._-]/g, "");
+    const email = `${username}@${selectedDomain}`;
 
     if (!/\S+@\S+\.\S+/.test(email)) {
       toast.error("Enter a valid email address");
@@ -333,7 +346,18 @@ const Email = () => {
                     className="input input-bordered w-full focus:outline-none"
                   />
                 </label>
-                <span className="btn join-item">@brid.bd</span>
+                <select
+                  value={selectedDomain}
+                  onChange={(event) => setSelectedDomain(event.target.value)}
+                  className="select select-bordered join-item max-w-36"
+                  aria-label="Email domain"
+                >
+                  {EMAIL_DOMAINS.map((domain) => (
+                    <option key={domain} value={domain}>
+                      @{domain}
+                    </option>
+                  ))}
+                </select>
                 <button
                   type="submit"
                   disabled={addingEmail}
@@ -394,8 +418,8 @@ const Email = () => {
         </p>
         <p>
           Use this email feature responsibly. Avoid sending spam or malicious
-          content. The system may monitor and restrict accounts that violate
-          these guidelines.
+          content. New inbox addresses can only use approved domains:{" "}
+          {EMAIL_DOMAINS.map((domain) => `@${domain}`).join(", ")}.
         </p>
       </div>
     </section>
