@@ -7,10 +7,6 @@ import {
   FiPaperclip,
   FiPlus,
   FiRefreshCw,
-  FiSearch,
-  FiTrash2,
-  FiUser,
-  FiX,
 } from "react-icons/fi";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
@@ -18,6 +14,9 @@ import Loading from "../../components/Loading/Loading";
 import { useAuth } from "../../hooks/useAuth";
 import useAxios from "../../lib/useAxios";
 import { getToken } from "../../lib/localstoreage";
+import MailboxList from "./MailboxList";
+import MessageList from "./MessageList";
+import MessagePreview from "./MessagePreview";
 
 const formatDate = (value) =>
   value
@@ -351,239 +350,40 @@ const Email = () => {
           </form>
 
           {/* Mailbox list */}
-          <div>
-            <div className="mb-3 flex items-center justify-between">
-              <h2 className="flex items-center gap-2 font-bold">
-                <FiMail className="text-primary" /> Mailboxes
-              </h2>
-              <span className="badge badge-primary badge-sm">
-                {mailboxes.length}
-              </span>
-            </div>
-
-            <div className="space-y-2">
-              {loadingMailboxes ? (
-                <div className="flex justify-center py-10">
-                  <span className="loading loading-spinner loading-lg text-primary" />
-                </div>
-              ) : mailboxes.length ? (
-                mailboxes.map((mail) => (
-                  <button
-                    key={mail}
-                    type="button"
-                    onClick={() => handleMailboxSelect(mail)}
-                    className={`flex w-full items-center gap-3 rounded-lg border p-3 text-left transition hover:border-primary hover:bg-primary/5 ${
-                      selectedMailbox === mail
-                        ? "border-primary bg-primary/10"
-                        : "border-base-300"
-                    }`}
-                  >
-                    <span className="grid h-10 w-10 place-items-center rounded-full bg-primary/10 text-primary">
-                      <FiUser />
-                    </span>
-                    <span className="min-w-0 flex-1 truncate font-medium">
-                      {mail}
-                    </span>
-                  </button>
-                ))
-              ) : (
-                <div className="rounded-lg border border-dashed border-base-300 p-5 text-center text-sm text-neutral/50">
-                  No email addresses added yet.
-                </div>
-              )}
-            </div>
-          </div>
+          <MailboxList
+            selectedMailbox={selectedMailbox}
+            mailboxes={mailboxes}
+            loadingMailboxes={loadingMailboxes}
+            handleMailboxSelect={handleMailboxSelect}
+            fetchMailboxes={fetchMailboxes}
+          />
         </aside>
 
         {/* Messages + Preview */}
         <div className="grid min-h-170 gap-6 xl:grid-cols-[0.9fr_1.1fr]">
           {/* Message list */}
-          <section className="rounded-xl border border-primary/20 bg-base-100 shadow-sm">
-            <div className="border-b border-primary/10 p-4">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <h2 className="font-bold">Messages</h2>
-                  <p className="text-sm text-neutral/50">
-                    {selectedMailbox || "Select a mailbox"}
-                  </p>
-                </div>
-                {search && (
-                  <button
-                    type="button"
-                    onClick={() => setSearch("")}
-                    className="btn btn-ghost btn-sm btn-square"
-                  >
-                    <FiX />
-                  </button>
-                )}
-              </div>
-              <label className="input input-bordered mt-3 flex items-center gap-2">
-                <FiSearch className="text-primary" />
-                <input
-                  type="search"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="grow"
-                  placeholder="Search sender, subject, body..."
-                />
-              </label>
-            </div>
 
-            {loadingMessages ? (
-              <div className="flex min-h-96 items-center justify-center">
-                <span className="loading loading-spinner loading-lg text-primary" />
-              </div>
-            ) : filteredMessages.length ? (
-              <div className="max-h-155 overflow-y-auto">
-                {filteredMessages.map((message) => (
-                  <button
-                    key={message._id}
-                    type="button"
-                    onClick={() => setSelectedMessage(message)}
-                    className={`w-full border-b border-base-300 p-4 text-left transition hover:bg-primary/5 ${
-                      selectedMessage?._id === message._id
-                        ? "bg-primary/10"
-                        : ""
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <p className="truncate font-semibold">
-                          {message.subject || "(No subject)"}
-                        </p>
-                        <p className="mt-1 truncate text-sm text-neutral/60">
-                          {message.from || "Unknown sender"}
-                        </p>
-                      </div>
-                      <span className="shrink-0 text-xs text-neutral/45">
-                        {formatDate(message.receivedAt || message.createdAt)}
-                      </span>
-                    </div>
-                    <p className="mt-2 line-clamp-2 text-sm text-neutral/55">
-                      {getMessageBody(message) || "No message body"}
-                    </p>
-                    {message.attachments?.length > 0 && (
-                      <span className="mt-3 inline-flex items-center gap-1 text-xs text-primary">
-                        <FiPaperclip />
-                        {message.attachments.length} attachment
-                        {message.attachments.length !== 1 && "s"}
-                      </span>
-                    )}
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <div className="flex min-h-96 flex-col items-center justify-center gap-3 p-6 text-center text-neutral/50">
-                <FiInbox className="h-12 w-12 text-primary/60" />
-                <p className="font-medium">
-                  {search ? "No emails match your search." : "No emails found."}
-                </p>
-              </div>
-            )}
-          </section>
+          <MessageList
+            selectedMailbox={selectedMailbox}
+            search={search}
+            setSearch={setSearch}
+            loadingMessages={loadingMessages}
+            filteredMessages={filteredMessages}
+            selectedMessage={selectedMessage}
+            setSelectedMessage={setSelectedMessage}
+            formatDate={formatDate}
+            getMessageBody={getMessageBody}
+          />
 
           {/* Message preview */}
-          <section className="rounded-xl border border-primary/20 bg-base-100 shadow-sm">
-            {selectedMessage ? (
-              <div className="flex h-full flex-col">
-                <div className="border-b border-primary/10 p-5">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="min-w-0">
-                      <h2 className="text-xl font-bold">
-                        {selectedMessage.subject || "(No subject)"}
-                      </h2>
-                      <p className="mt-2 text-sm text-neutral/60">
-                        From: {selectedMessage.from || "Unknown"}
-                      </p>
-                      <p className="text-sm text-neutral/60">
-                        To: {selectedMessage.to || selectedMailbox}
-                      </p>
-                      {selectedMessage.replyTo && (
-                        <p className="text-sm text-neutral/60">
-                          Reply to: {selectedMessage.replyTo}
-                        </p>
-                      )}
-                      <p className="mt-2 text-xs text-neutral/45">
-                        {formatDate(
-                          selectedMessage.receivedAt ||
-                            selectedMessage.createdAt,
-                        )}
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => handleDeleteMessage(selectedMessage)}
-                      disabled={deletingId === selectedMessage._id}
-                      className="btn btn-error btn-outline btn-sm gap-2"
-                    >
-                      {deletingId === selectedMessage._id ? (
-                        <span className="loading loading-spinner loading-sm" />
-                      ) : (
-                        <FiTrash2 />
-                      )}
-                      Delete
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flex-1 space-y-5 overflow-y-auto p-5">
-                  {selectedMessage.text ? (
-                    <div className="whitespace-pre-wrap rounded-lg border border-base-300 bg-base-200/50 p-4 text-sm leading-6">
-                      {selectedMessage.text}
-                    </div>
-                  ) : selectedMessage.html ? (
-                    <iframe
-                      title="Email HTML preview"
-                      sandbox=""
-                      srcDoc={selectedMessage.html}
-                      className="min-h-96 w-full rounded-lg border border-base-300 bg-white"
-                    />
-                  ) : (
-                    <div className="rounded-lg border border-dashed border-base-300 p-8 text-center text-neutral/50">
-                      No body content.
-                    </div>
-                  )}
-
-                  {selectedMessage.attachments?.length > 0 && (
-                    <div className="rounded-lg border border-base-300 p-4">
-                      <h3 className="mb-3 flex items-center gap-2 font-bold">
-                        <FiPaperclip className="text-primary" /> Attachments
-                      </h3>
-                      <div className="grid gap-2">
-                        {selectedMessage.attachments.map(
-                          (attachment, index) => (
-                            <div
-                              key={attachment?._id || attachment?.url || index}
-                              className="flex items-center justify-between gap-3 rounded-lg bg-base-200/60 px-3 py-2 text-sm"
-                            >
-                              <span className="truncate">
-                                {getAttachmentName(attachment, index)}
-                              </span>
-                              {attachment?.url && (
-                                <a
-                                  href={attachment.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="btn btn-ghost btn-xs"
-                                >
-                                  Open
-                                </a>
-                              )}
-                            </div>
-                          ),
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="flex min-h-full flex-col items-center justify-center gap-3 p-8 text-center text-neutral/50">
-                <FiMail className="h-12 w-12 text-primary/60" />
-                <p className="font-medium">Select an email to preview.</p>
-              </div>
-            )}
-          </section>
+          <MessagePreview
+            selectedMessage={selectedMessage}
+            handleDeleteMessage={handleDeleteMessage}
+            deletingId={deletingId}
+            formatDate={formatDate}
+            selectedMailbox={selectedMailbox}
+            getAttachmentName={getAttachmentName}
+          />
         </div>
       </div>
 

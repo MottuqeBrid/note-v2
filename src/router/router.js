@@ -89,6 +89,10 @@ export const router = createBrowserRouter([
         Component: AdminFiles,
       },
       {
+        path: "emails",
+        Component: AdminFiles,
+      },
+      {
         path: "*",
         Component: NotFound,
       },
