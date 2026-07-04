@@ -27,19 +27,11 @@ const Hero = () => {
         alt="M-Note workspace preview"
         className="absolute inset-0 -z-10 h-full w-full object-center opacity-20"
       />
-      {/* <div className="absolute inset-0 -z-10 bg-linear-to-tl from-neutral/70 via-neutral/50 to-neutral/20" /> */}
-
-      {/* Glow */}
-      {/* <div className="absolute -top-32 left-1/2 -z-10 h-96 w-96 -translate-x-1/2 rounded-full bg-primary/20 blur-3xl" /> */}
-
       <div className="min-h-[76vh] px-5 py-24 sm:px-8 lg:px-16">
         <div className="flex min-h-[58vh] max-w-3xl flex-col justify-center">
           {/* Label */}
           <div className="mb-5 inline-flex w-fit items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-            {/* <span className="text-xs font-bold uppercase tracking-widest text-primary">
-              M-Note
-            </span> */}
             <Logo />
           </div>
 
