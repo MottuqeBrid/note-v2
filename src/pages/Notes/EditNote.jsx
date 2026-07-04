@@ -7,7 +7,7 @@ import { getToken } from "../../lib/localstoreage";
 const EditNote = ({ note, setShowEditNoteForm, fetchNotes }) => {
   const [isLoading, setIsLoading] = useState(false);
   const app = useAxios();
-  const token = getToken();
+  const token = getToken("token");
 
   const authHeader = () => ({ Authorization: `Bearer ${token}` });
 
