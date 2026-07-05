@@ -15,6 +15,7 @@ import {
 import useAxios from "../../lib/useAxios";
 import { getToken } from "../../lib/localstoreage";
 import { toast } from "react-toastify";
+import { useAuth } from "../../hooks/useAuth";
 
 const UpdateProfile = () => {
   const [profile, setProfile] = useState(null);
@@ -28,6 +29,8 @@ const UpdateProfile = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const [emailChecking, setEmailChecking] = useState(false);
   const [phoneChecking, setPhoneChecking] = useState(false);
+
+  const { user: currentUser, loading: authLoading } = useAuth();
 
   const app = useAxios();
   const navigate = useNavigate();
@@ -85,6 +88,8 @@ const UpdateProfile = () => {
       navigate("/profile");
       return;
     }
+    if (!authLoading && currentUser && !currentUser.isVerified)
+      navigate("/verify", { state: { email: currentUser.email } });
     const lodeProfile = async () => await getProfile();
     lodeProfile();
     return () => {

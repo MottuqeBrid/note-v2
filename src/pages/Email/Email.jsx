@@ -177,6 +177,8 @@ const Email = () => {
   // auth guard
   useEffect(() => {
     if (!authLoading && !user) navigate("/login", { replace: true });
+    if (!authLoading && user && !user.isVerified)
+      navigate("/verify", { state: { email: user.email } });
   }, [authLoading, navigate, user]);
 
   // initial load
@@ -429,7 +431,7 @@ const Email = () => {
       </div>
 
       {/* Main Grid */}
-      <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
+      <div className="grid gap-6 md:grid-cols-2">
         {/* Sidebar */}
         <aside className="space-y-4 rounded-xl border border-primary/20 bg-base-100 p-5 shadow-sm">
           {/* Add email form */}
@@ -490,7 +492,7 @@ const Email = () => {
         </aside>
 
         {/* Messages + Preview */}
-        <div className="grid min-h-170 gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+        <div className="grid min-h-170 gap-6 grid-cols-1">
           {/* Message list */}
 
           <MessageList
@@ -504,7 +506,8 @@ const Email = () => {
             formatDate={formatDate}
             getMessageBody={getMessageBody}
           />
-
+        </div>
+        <div className="col-span-2">
           {/* Message preview */}
           <MessagePreview
             selectedMessage={selectedMessage}

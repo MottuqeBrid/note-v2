@@ -44,6 +44,8 @@ const Files = () => {
 
   useEffect(() => {
     if (!loading && !user) navigate("/login");
+    if (!loading && user && !user.isVerified)
+      navigate("/verify", { state: { email: user.email } });
   }, [loading, navigate, user]);
 
   const fetchFiles = useCallback(

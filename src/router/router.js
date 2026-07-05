@@ -17,6 +17,8 @@ import SharedFilesPage from "../pages/SharedFilesPage/SharedFilesPage";
 import AdminFiles from "../pages/AdminPage/AdminFiles/AdminFiles";
 import Email from "../pages/Email/Email";
 import Emails from "../pages/AdminPage/Emails/Emails";
+import OtpVerification from "../layouts/OtpVerification/OtpVerification";
+import Verify from "../layouts/Verify/Verify";
 
 export const router = createBrowserRouter([
   {
@@ -46,6 +48,14 @@ export const router = createBrowserRouter([
       {
         path: "login",
         Component: Login,
+      },
+      {
+        path: "otp-verification",
+        Component: OtpVerification,
+      },
+      {
+        path: "verify",
+        Component: Verify,
       },
       {
         path: "profile",

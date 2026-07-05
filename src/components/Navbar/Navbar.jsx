@@ -10,7 +10,7 @@ const Navbar = ({ page = "home" }) => {
       <li>
         <NavLink to="/">Home</NavLink>
       </li>
-      {user && (
+      {user && user.isVerified && (
         <>
           <li>
             <NavLink to="/notes">Notes</NavLink>

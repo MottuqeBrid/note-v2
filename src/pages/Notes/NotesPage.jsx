@@ -70,6 +70,15 @@ const NotesPage = () => {
   }, [search]);
 
   useEffect(() => {
+    if (!loading && !user) {
+      navigate("/login");
+    }
+    if (!loading && user && !user.isVerified) {
+      navigate("/verify", { state: { email: user.email } });
+    }
+  }, [loading, navigate, user]);
+
+  useEffect(() => {
     const loadNotes = async () => {
       // Fetch notes from the API and set them in state
       await fetchNotes();

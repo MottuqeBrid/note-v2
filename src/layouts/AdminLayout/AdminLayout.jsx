@@ -1,13 +1,21 @@
-import { Outlet } from "react-router";
+import { Outlet, useNavigate } from "react-router";
 import { useAuth } from "../../hooks/useAuth";
 import Forbidden from "../../components/Forbidden/Forbidden";
 import Loading from "../../components/Loading/Loading";
 import Navbar from "../../components/Navbar/Navbar";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
 import AdminNavbar from "../../pages/AdminPage/AdminNavbar/AdminNavbar";
+import { useEffect } from "react";
 
 const AdminLayout = () => {
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!user?.isVerified && !loading) {
+      navigate("/verify", { state: { email: user?.email } });
+    }
+  }, [loading, navigate, user]);
+
   if (loading) {
     return <Loading />;
   }

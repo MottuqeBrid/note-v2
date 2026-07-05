@@ -35,7 +35,7 @@ const SignUp = () => {
     try {
       setIsLoading(true);
       const res = await api.post("user/signup", data);
-      setToken("token", res.data?.token);
+      await setToken("token", res.data?.token);
       Swal.fire({
         icon: "success",
         title: "Account created successfully!",
@@ -43,6 +43,7 @@ const SignUp = () => {
         showConfirmButton: false,
         timer: 1500,
       });
+      navigate("/otp-verification", { state: { email: data.email } });
     } catch (error) {
       Swal.fire({
         icon: "error",
