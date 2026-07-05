@@ -12,12 +12,12 @@ const MessageList = ({
   getMessageBody,
 }) => {
   return (
-    <section className="rounded-xl border border-primary/20 bg-base-100 shadow-sm">
+    <section className="min-w-0 overflow-hidden rounded-xl border border-primary/20 bg-base-100 shadow-sm">
       <div className="border-b border-primary/10 p-4">
         <div className="flex items-center justify-between gap-3">
-          <div>
+          <div className="min-w-0">
             <h2 className="font-bold">Messages</h2>
-            <p className="text-sm text-neutral/50">
+            <p className="truncate text-sm text-neutral/50">
               {selectedMailbox || "Select a mailbox"}
             </p>
           </div>
@@ -31,13 +31,13 @@ const MessageList = ({
             </button>
           )}
         </div>
-        <label className="input input-bordered mt-3 flex items-center gap-2">
+        <label className="input input-bordered mt-3 flex min-w-0 items-center gap-2">
           <FiSearch className="text-primary" />
           <input
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="grow"
+            className="min-w-0 grow"
             placeholder="Search sender, subject, body..."
           />
         </label>
@@ -48,7 +48,7 @@ const MessageList = ({
           <span className="loading loading-spinner loading-lg text-primary" />
         </div>
       ) : filteredMessages.length ? (
-        <div className="max-h-155 overflow-y-auto">
+        <div className="max-h-112 overflow-y-auto sm:max-h-136 xl:max-h-[calc(100vh-17rem)]">
           {filteredMessages.map((message) => (
             <button
               key={message._id}
@@ -58,7 +58,7 @@ const MessageList = ({
                 selectedMessage?._id === message._id ? "bg-primary/10" : ""
               }`}
             >
-              <div className="flex items-start justify-between gap-3">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
                 <div className="min-w-0">
                   <p className="truncate font-semibold">
                     {message.subject || "(No subject)"}

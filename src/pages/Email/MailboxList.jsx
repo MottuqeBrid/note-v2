@@ -42,7 +42,7 @@ const MailboxList = ({
   };
   return (
     <div>
-      <div className="mb-3 flex items-center justify-between">
+      <div className="mb-3 flex items-center justify-between gap-3">
         <h2 className="flex items-center gap-2 font-bold">
           <FiMail className="text-primary" /> Mailboxes
         </h2>
@@ -60,31 +60,33 @@ const MailboxList = ({
               key={mail}
               type="button"
               onClick={() => handleMailboxSelect(mail)}
-              className={`flex w-full cursor-pointer items-center gap-3 rounded-lg border p-3 text-left transition hover:border-primary hover:bg-primary/5 ${
+              className={`flex w-full cursor-pointer flex-wrap items-center gap-2 rounded-lg border p-3 text-left transition hover:border-primary hover:bg-primary/5 sm:flex-nowrap sm:gap-3 ${
                 selectedMailbox === mail
                   ? "border-primary bg-primary/10"
                   : "border-base-300"
               }`}
             >
-              <span className="grid h-10 w-10 place-items-center rounded-full bg-primary/10 text-primary">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/10 text-primary sm:h-10 sm:w-10">
                 <FiUser />
               </span>
               <span className="min-w-0 flex-1 truncate font-medium">
                 {mail}
               </span>
               {selectedMailbox === mail && (
-                <span className="badge badge-primary badge-sm">Selected</span>
+                <span className="badge badge-primary badge-sm shrink-0">
+                  Selected
+                </span>
               )}
               <span
                 type="button"
-                className="btn btn-ghost btn-sm btn-square"
+                className="btn btn-ghost btn-sm btn-square shrink-0"
                 onClick={(e) => handleDeleteMailbox(e, mail)}
               >
                 <FiTrash2 />
               </span>
               <span
                 type="button"
-                className="btn btn-ghost btn-sm btn-square cursor-copy"
+                className="btn btn-ghost btn-sm btn-square shrink-0 cursor-copy"
                 onClick={() => navigator.clipboard.writeText(mail)}
               >
                 <FiCopy />

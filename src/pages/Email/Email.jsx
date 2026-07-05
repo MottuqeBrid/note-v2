@@ -341,22 +341,22 @@ const Email = () => {
   if (!user) return null;
 
   return (
-    <section className="space-y-6 p-4 text-neutral md:p-6">
+    <section className="space-y-4 px-3 py-4 text-neutral sm:space-y-6 sm:px-4 md:p-6">
       {/* Header */}
-      <div className="rounded-xl border border-primary/20 bg-base-100 p-5 shadow-sm">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
+      <div className="rounded-xl border border-primary/20 bg-base-100 p-4 shadow-sm sm:p-5">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+          <div className="min-w-0">
             <p className="text-sm font-semibold uppercase tracking-wide text-primary">
               Inbox
             </p>
-            <h1 className="mt-1 text-2xl font-bold md:text-3xl">Email</h1>
-            <p className="mt-1 text-sm text-neutral/60">
+            <h1 className="mt-1 text-2xl font-bold sm:text-3xl">Email</h1>
+            <p className="mt-1 max-w-2xl text-sm text-neutral/60">
               Add mailbox addresses, view received messages, and delete emails
               you no longer need.
             </p>
           </div>
-          <div className="flex flex-col gap-3 lg:items-end">
-            <div className="flex flex-col gap-3 rounded-lg border border-primary/10 bg-primary/5 p-3 text-sm sm:flex-row sm:items-center">
+          <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between lg:w-auto lg:flex-col lg:items-end">
+            <div className="flex w-full flex-col gap-3 rounded-lg border border-primary/10 bg-primary/5 p-3 text-sm sm:flex-row sm:flex-wrap sm:items-center lg:w-auto">
               <label className="flex items-center gap-2 font-semibold">
                 <input
                   type="checkbox"
@@ -368,7 +368,7 @@ const Email = () => {
                 />
                 Auto reload
               </label>
-              <label className="flex items-center gap-2 text-neutral/70">
+              <label className="flex flex-wrap items-center gap-2 text-neutral/70">
                 <FiClock className="text-primary" />
                 <span>Every</span>
                 <input
@@ -384,14 +384,14 @@ const Email = () => {
                 />
                 <span>sec</span>
               </label>
-              <span className="text-xs text-neutral/50">
+              <span className="text-xs text-neutral/50 sm:ml-auto lg:ml-0">
                 Last: {formatLastRefreshed(lastRefreshedAt)}
               </span>
             </div>
             <button
               type="button"
               onClick={() => refreshInbox(true)}
-              className="btn btn-primary gap-2"
+              className="btn btn-primary w-full gap-2 sm:w-auto"
               disabled={loadingMailboxes || loadingMessages}
             >
               {loadingMailboxes || loadingMessages ? (
@@ -431,9 +431,9 @@ const Email = () => {
       </div>
 
       {/* Main Grid */}
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(18rem,0.8fr)_minmax(0,1.2fr)] xl:grid-cols-[minmax(18rem,0.75fr)_minmax(20rem,1fr)_minmax(22rem,1.15fr)]">
         {/* Sidebar */}
-        <aside className="space-y-4 rounded-xl border border-primary/20 bg-base-100 p-5 shadow-sm">
+        <aside className="min-w-0 space-y-4 rounded-xl border border-primary/20 bg-base-100 p-4 shadow-sm sm:p-5">
           {/* Add email form */}
           <form onSubmit={handleAddEmail} className="space-y-3">
             <label className="form-control">
@@ -442,8 +442,8 @@ const Email = () => {
                   Add email address
                 </span>
               </span>
-              <div className="join w-full">
-                <label className="input validator join-item w-full">
+              <div className="flex w-full flex-col gap-2 sm:join sm:flex-row sm:gap-0">
+                <label className="input validator w-full sm:join-item sm:min-w-0">
                   <FiMail />
                   <input
                     type="text"
@@ -451,13 +451,13 @@ const Email = () => {
                     placeholder="mail username"
                     value={newEmail}
                     onChange={(e) => setNewEmail(e.target.value)}
-                    className="input input-bordered w-full focus:outline-none"
+                    className="min-w-0 grow focus:outline-none"
                   />
                 </label>
                 <select
                   value={selectedDomain}
                   onChange={(event) => setSelectedDomain(event.target.value)}
-                  className="select select-bordered join-item max-w-36"
+                  className="select select-bordered w-full sm:join-item sm:w-auto sm:max-w-40"
                   aria-label="Email domain"
                 >
                   {EMAIL_DOMAINS.map((domain) => (
@@ -469,7 +469,8 @@ const Email = () => {
                 <button
                   type="submit"
                   disabled={addingEmail}
-                  className="btn btn-primary join-item"
+                  className="btn btn-primary w-full sm:join-item sm:w-auto"
+                  aria-label="Add email address"
                 >
                   {addingEmail ? (
                     <span className="loading loading-spinner loading-sm" />
@@ -492,7 +493,7 @@ const Email = () => {
         </aside>
 
         {/* Messages + Preview */}
-        <div className="grid min-h-170 gap-6 grid-cols-1">
+        <div className="min-w-0">
           {/* Message list */}
 
           <MessageList
@@ -507,7 +508,7 @@ const Email = () => {
             getMessageBody={getMessageBody}
           />
         </div>
-        <div className="col-span-2">
+        <div className="min-w-0 lg:col-span-2 xl:col-span-1">
           {/* Message preview */}
           <MessagePreview
             selectedMessage={selectedMessage}
