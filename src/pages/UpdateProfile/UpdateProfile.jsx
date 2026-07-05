@@ -68,8 +68,8 @@ const UpdateProfile = () => {
       setValue("phoneNumber", user.phoneNumber ?? "");
       setValue("profilePicture", user.profilePicture ?? "");
       if (user.profilePicture) setPreviewImage(user.profilePicture);
+      // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      console.error(error);
       setErrorMsg("Failed to load profile");
     } finally {
       setLoading(false);
@@ -158,8 +158,8 @@ const UpdateProfile = () => {
         },
       });
       return data.files?.[0]?.url ?? null;
+      // eslint-disable-next-line no-unused-vars
     } catch (err) {
-      console.error("Image upload failed:", err);
       setErrorMsg("Image upload failed");
       return null;
     } finally {
@@ -205,7 +205,6 @@ const UpdateProfile = () => {
         const url = await uploadProfileImage(selectedImageFile);
         if (url) profilePictureUrl = url;
       }
-      console.log(profilePictureUrl);
       await app.patch(
         `user/profile`,
         { ...formData, profilePicture: profilePictureUrl },
@@ -216,7 +215,6 @@ const UpdateProfile = () => {
       toast.success("Profile updated successfully!");
       setTimeout(() => navigate("/profile"), 1500);
     } catch (err) {
-      console.error(err);
       setErrorMsg(err.response?.data?.message ?? "Failed to update profile");
       toast.error("Failed to update profile");
     } finally {

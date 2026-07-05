@@ -30,6 +30,7 @@ import {
 } from "../../Files/filesUtils";
 import StatCard from "../AdminNotes/StatCard";
 import { FaWindowRestore } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const getOwner = (file) => {
   if (!file?.owner || typeof file.owner === "string") {
@@ -202,7 +203,7 @@ const AdminFiles = () => {
       const { data } = await app.delete(`admin/files/${file._id}`, {
         headers: authHeaders,
       });
-      console.log("Delete response:", data);
+      toast.success(data?.message || "File folder deleted successfully.");
       setFiles((previous) =>
         previous.map((item) =>
           item._id === file._id

@@ -36,7 +36,6 @@ const NotesPage = () => {
       }
       setNotes(response.notes || []);
     } catch (error) {
-      console.error("Error fetching notes:", error);
       if (notify) {
         toast.error(error.message || "An error occurred while fetching notes.");
       }
@@ -61,7 +60,6 @@ const NotesPage = () => {
         );
         setNotes(response.notes || []);
       } catch (error) {
-        console.error("Error searching notes:", error);
         toast.error(
           error.message || "An error occurred while searching notes.",
         );

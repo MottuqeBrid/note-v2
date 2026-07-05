@@ -21,7 +21,6 @@ const AddNotes = ({ setShowAddNoteForm, fetchNotes }) => {
         "Content-Type": "multipart/form-data",
       },
     });
-    console.log("Uploaded files:", data);
     return data.files ?? [];
   };
 
@@ -77,7 +76,6 @@ const AddNotes = ({ setShowAddNoteForm, fetchNotes }) => {
       setShowAddNoteForm(false);
       fetchNotes(); // Refresh notes after adding a new one
     } catch (error) {
-      console.error("Failed to save note:", error);
       Swal.fire({
         icon: "error",
         title: "Failed to add note",

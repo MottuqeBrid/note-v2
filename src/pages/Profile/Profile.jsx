@@ -44,7 +44,7 @@ const Profile = () => {
       });
       setProfile(data.user);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

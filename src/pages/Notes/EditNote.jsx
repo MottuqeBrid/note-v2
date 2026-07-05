@@ -81,7 +81,6 @@ const EditNote = ({ note, setShowEditNoteForm, fetchNotes }) => {
         });
       }
     } catch (error) {
-      console.error("Failed to save note:", error);
       Swal.fire({
         icon: "error",
         title: "Failed to update note",

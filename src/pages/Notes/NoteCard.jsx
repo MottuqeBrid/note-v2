@@ -122,8 +122,6 @@ const NoteCard = ({ note, fetchNotes, setShowEditNoteForm, setEditNote }) => {
   const [expanded, setExpanded] = useState(false);
   if (!note) return null;
 
-  console.log("NoteCard rendered with note:", note);
-
   const { title, content, createdAt, updatedAt, deleted } = note;
   const files = content?.files || [];
   const images = content?.images || [];

@@ -1,6 +1,7 @@
 import { memo, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { toast } from "react-toastify";
 
 const CodeView = ({ code = "", language = "text", cls = "" }) => {
   const [copied, setCopied] = useState(false);
@@ -10,8 +11,9 @@ const CodeView = ({ code = "", language = "text", cls = "" }) => {
       await navigator.clipboard.writeText(code);
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
+      // eslint-disable-next-line no-unused-vars
     } catch (err) {
-      console.error("Copy failed:", err);
+      toast.error("Failed to copy code to clipboard");
     }
   };
 

@@ -58,7 +58,6 @@ const NotesForm = ({ onSubmit, defaultValues, isLoading }) => {
       content: { type: "text", text: "", files: [], images: [] },
     },
   });
-  console.log("defaultValues:", defaultValues);
   const {
     fields: fileFields,
     append: appendFile,
