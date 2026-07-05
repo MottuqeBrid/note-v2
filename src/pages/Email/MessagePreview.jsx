@@ -8,6 +8,7 @@ const MessagePreview = ({
   selectedMailbox,
   getAttachmentName,
 }) => {
+  console.log("selectedMessage:", selectedMessage);
   return (
     <section className="rounded-xl border border-primary/20 bg-base-100 shadow-sm">
       {selectedMessage ? (
@@ -52,17 +53,18 @@ const MessagePreview = ({
           </div>
 
           <div className="flex-1 space-y-5 overflow-y-auto p-5">
-            {selectedMessage.text ? (
-              <div className="whitespace-pre-wrap rounded-lg border border-base-300 bg-base-200/50 p-4 text-sm leading-6">
-                {selectedMessage.text}
-              </div>
-            ) : selectedMessage.html ? (
+            {selectedMessage.html ? (
               <iframe
                 title="Email HTML preview"
                 sandbox=""
                 srcDoc={selectedMessage.html}
                 className="min-h-96 w-full rounded-lg border border-base-300 bg-white"
               />
+            ) : selectedMessage.text ? (
+              <div className="whitespace-pre-wrap rounded-lg border border-base-300 bg-base-200/50 p-4 text-sm leading-6">
+                {/* {selectedMessage.text} */}
+                this is text
+              </div>
             ) : (
               <div className="rounded-lg border border-dashed border-base-300 p-8 text-center text-neutral/50">
                 No body content.
