@@ -116,7 +116,7 @@ const OtpVerification = () => {
         timer: 1600,
         showConfirmButton: false,
       });
-      navigate("/");
+      navigate(0); // Refresh the page to update the user state
     } catch (error) {
       Swal.fire({
         icon: "error",
