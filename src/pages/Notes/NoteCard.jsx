@@ -16,6 +16,7 @@ import useAxios from "../../lib/useAxios";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { getToken } from "../../lib/localstoreage";
+import CodeView from "./CodeView";
 
 const FILE_TYPE_MAP = {
   "text/html": {
@@ -121,10 +122,13 @@ const NoteCard = ({ note, fetchNotes, setShowEditNoteForm, setEditNote }) => {
   const [expanded, setExpanded] = useState(false);
   if (!note) return null;
 
+  console.log("NoteCard rendered with note:", note);
+
   const { title, content, createdAt, updatedAt, deleted } = note;
   const files = content?.files || [];
   const images = content?.images || [];
   const text = content?.text;
+  const type = content?.type || "text"; // Default to "text" if type is not provided
   const isActive = !deleted;
   const isEdited = createdAt !== updatedAt;
 
@@ -187,7 +191,7 @@ const NoteCard = ({ note, fetchNotes, setShowEditNoteForm, setEditNote }) => {
     setShowEditNoteForm(true);
   };
   return (
-    <div className="bg-primary/20 rounded-2xl border border-primary/30 shadow-sm w-full  px-5 space-y-4">
+    <div className="bg-primary/70 rounded-2xl border border-primary/30 shadow-sm w-full  px-5 space-y-4">
       <div className="flex justify-between h-full items-center flex-col">
         <div className=" w-full my-5 space-y-4">
           {/* Header */}
@@ -195,10 +199,10 @@ const NoteCard = ({ note, fetchNotes, setShowEditNoteForm, setEditNote }) => {
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5 mb-1">
                 <span
-                  className={`w-2 h-2 rounded-full shrink-0 ${isActive ? "bg-emerald-400" : "bg-red-400"}`}
+                  className={`w-2 h-2 rounded-full shrink-0 ${isActive ? "bg-green-700" : "bg-red-400"}`}
                 />
                 <span
-                  className={`text-[10px] font-semibold tracking-widest uppercase ${isActive ? "text-emerald-500" : "text-red-500"}`}
+                  className={`text-[10px] font-semibold tracking-widest uppercase ${isActive ? "text-green-700" : "text-red-500"}`}
                 >
                   {isActive ? "Active" : "Deleted"}
                 </span>
@@ -211,7 +215,7 @@ const NoteCard = ({ note, fetchNotes, setShowEditNoteForm, setEditNote }) => {
             {text && text.length > 100 && (
               <button
                 onClick={() => setExpanded((v) => !v)}
-                className="text-slate-300 hover:text-slate-600 transition-colors p-1 rounded-lg hover:bg-slate-100 shrink-0"
+                className="hover:text-slate-600 transition-colors p-1 rounded-lg hover:bg-slate-100 shrink-0"
                 title={expanded ? "Hide details" : "Show details"}
               >
                 <FiChevronDown
@@ -225,11 +229,17 @@ const NoteCard = ({ note, fetchNotes, setShowEditNoteForm, setEditNote }) => {
           {/* Body text */}
           {text && (
             <p className="text-sm text-black leading-relaxed bg-slate-50/20 rounded-lg px-3 py-2.5 border-l-2 border-primary/30">
-              {expanded
-                ? text
-                : text.length > 100
-                  ? `${text.slice(0, 100)}...`
-                  : text}
+              {expanded ? (
+                <CodeView code={text} language={type} cls="rounded-lg" />
+              ) : text.length > 100 ? (
+                <CodeView
+                  code={`${text.slice(0, 100)}...`}
+                  language={type}
+                  cls="rounded-lg"
+                />
+              ) : (
+                <CodeView code={text} language={type} cls="rounded-lg" />
+              )}
             </p>
           )}
 
@@ -268,14 +278,14 @@ const NoteCard = ({ note, fetchNotes, setShowEditNoteForm, setEditNote }) => {
           <div className="flex items-center justify-between">
             <div className=" space-y-2">
               {/* Created Date */}
-              <div className="flex items-center gap-1.5 text-xs text-slate-400">
+              <div className="flex items-center gap-1.5 text-xs">
                 <FiClock size={11} />
                 <span>{fmtDate(createdAt)}</span>
               </div>
               {/* Updated Date */}
               <div className="flex items-center justify-between">
                 {isEdited && (
-                  <span className="text-[11px] text-slate-300">
+                  <span className="text-[11px]">
                     Edited {fmtDate(updatedAt)}
                   </span>
                 )}
