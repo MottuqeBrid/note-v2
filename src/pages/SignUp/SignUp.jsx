@@ -99,29 +99,6 @@ const SignUp = () => {
                 </span>
               )}
             </label>
-            <label className="form-control w-full">
-              <div className="label py-1">
-                <span className="label-text">User Name</span>
-              </div>
-              <label
-                className={`${errors.username ? inputErrorClass : inputClass}`}
-              >
-                <FiUser className="text-base-content/40 shrink-0" />
-                <input
-                  type="text"
-                  placeholder="John Doe"
-                  className="grow w-full"
-                  {...register("username", {
-                    required: "User name is required",
-                  })}
-                />
-              </label>
-              {errors.username && (
-                <span className="text-error text-xs mt-1">
-                  {errors.username.message}
-                </span>
-              )}
-            </label>
 
             <label className="form-control w-full">
               <div className="label py-1">
