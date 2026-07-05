@@ -5,7 +5,7 @@ import useAxios from "../../lib/useAxios";
 import Swal from "sweetalert2";
 import { setToken } from "../../lib/localstoreage";
 import { useAuth } from "../../hooks/useAuth";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Loading from "../../components/Loading/Loading";
 
 const SignUp = () => {
@@ -219,9 +219,9 @@ const SignUp = () => {
 
           <p className="text-center text-sm text-base-content/60">
             Already have an account?{" "}
-            <a href="/login" className="link link-primary">
+            <Link to="/login" className="link link-primary">
               Login
-            </a>
+            </Link>
           </p>
         </div>
       </div>
