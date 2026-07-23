@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 import {
   FiArchive,
+  FiArrowLeft,
   FiCalendar,
   FiDownload,
   FiInbox,
@@ -112,6 +113,7 @@ const Emails = () => {
   const [search, setSearch] = useState("");
   const [selectedEmail, setSelectedEmail] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showPreview, setShowPreview] = useState(false);
 
   const isAdmin = useMemo(() => isAdminUser(user), [user]);
   const authHeaders = useMemo(
@@ -196,6 +198,11 @@ const Emails = () => {
     [emails],
   );
 
+  const handleSelectEmail = (email) => {
+    setSelectedEmail(email);
+    setShowPreview(true);
+  };
+
   if (authLoading) return <Loading />;
 
   return (
@@ -260,7 +267,7 @@ const Emails = () => {
           </div>
         </div>
 
-        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-5">
           <StatCard icon={<FiMail />} label="Emails" value={stats.total} />
           <StatCard icon={<FiArchive />} label="Active" value={stats.active} />
           <StatCard icon={<FiInbox />} label="Deleted" value={stats.deleted} />
@@ -283,14 +290,20 @@ const Emails = () => {
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1fr_0.85fr]">
-        <div className="overflow-hidden rounded-xl border border-primary/20 bg-base-100 shadow-sm">
+        {/* Email list */}
+        <div
+          className={`overflow-hidden rounded-xl border border-primary/20 bg-base-100 shadow-sm ${
+            showPreview ? "hidden xl:block" : "block"
+          }`}
+        >
           {loading ? (
             <div className="flex items-center justify-center py-20">
               <span className="loading loading-spinner loading-lg text-primary" />
             </div>
           ) : filteredEmails.length ? (
             <div className="overflow-x-auto">
-              <table className="table">
+              {/* Desktop table */}
+              <table className="table hidden lg:table">
                 <thead className="bg-primary/10 text-neutral">
                   <tr>
                     <th>Email</th>
@@ -309,7 +322,7 @@ const Emails = () => {
                     return (
                       <tr
                         key={email._id}
-                        onClick={() => setSelectedEmail(email)}
+                        onClick={() => handleSelectEmail(email)}
                         className={`cursor-pointer hover:bg-primary/5 ${
                           selectedEmail?._id === email._id
                             ? "bg-primary/10"
@@ -385,6 +398,77 @@ const Emails = () => {
                   })}
                 </tbody>
               </table>
+
+              {/* Mobile card list */}
+              <div className="divide-y divide-primary/10 lg:hidden">
+                {filteredEmails.map((email) => {
+                  const owner = getOwner(email);
+                  const deleted = isDeletedEmail(email);
+
+                  return (
+                    <button
+                      key={email._id}
+                      type="button"
+                      onClick={() => handleSelectEmail(email)}
+                      className={`w-full p-4 text-left transition hover:bg-primary/5 ${
+                        selectedEmail?._id === email._id ? "bg-primary/10" : ""
+                      } ${deleted ? "opacity-65" : ""}`}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate font-semibold">
+                            {email.subject || "(No subject)"}
+                          </p>
+                          <p className="mt-0.5 truncate text-sm text-neutral/60">
+                            {email.from || "Unknown sender"}
+                          </p>
+                        </div>
+                        {deleted ? (
+                          <span className="badge badge-error badge-sm shrink-0">
+                            Deleted
+                          </span>
+                        ) : (
+                          <span className="badge badge-success badge-sm shrink-0">
+                            Active
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="mt-2 flex items-center gap-3 text-xs text-neutral/50">
+                        <div className="flex items-center gap-1.5">
+                          <span className="grid h-5 w-5 shrink-0 place-items-center overflow-hidden rounded-full bg-primary/10 text-primary">
+                            {owner.profilePicture ? (
+                              <img
+                                src={owner.profilePicture}
+                                alt={owner.name}
+                                className="h-full w-full object-cover"
+                              />
+                            ) : (
+                              <FiUser size={10} />
+                            )}
+                          </span>
+                          <span className="truncate">{owner.name}</span>
+                        </div>
+
+                        <span className="badge badge-primary badge-outline badge-xs shrink-0">
+                          {email.email || "Unknown mailbox"}
+                        </span>
+
+                        {email.attachments?.length > 0 && (
+                          <span className="flex shrink-0 items-center gap-1">
+                            <FiPaperclip size={10} className="text-primary" />
+                            {email.attachments.length}
+                          </span>
+                        )}
+
+                        <span className="ml-auto shrink-0 text-neutral/40">
+                          {formatDate(email.receivedAt || email.createdAt)}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center gap-3 px-4 py-20 text-center text-neutral/50">
@@ -398,10 +482,24 @@ const Emails = () => {
           )}
         </div>
 
-        <aside className="rounded-xl border border-primary/20 bg-base-100 shadow-sm">
+        {/* Preview pane */}
+        <aside
+          className={`rounded-xl border border-primary/20 bg-base-100 shadow-sm ${
+            showPreview ? "block" : "hidden xl:block"
+          }`}
+        >
           {selectedEmail ? (
             <div className="flex h-full flex-col">
               <div className="border-b border-primary/10 p-5">
+                <button
+                  type="button"
+                  onClick={() => setShowPreview(false)}
+                  className="btn btn-ghost btn-sm mb-3 gap-1 xl:hidden"
+                >
+                  <FiArrowLeft />
+                  Back to list
+                </button>
+
                 <h2 className="text-xl font-bold">
                   {selectedEmail.subject || "(No subject)"}
                 </h2>
@@ -424,17 +522,17 @@ const Emails = () => {
               </div>
 
               <div className="space-y-5 p-5">
-                {selectedEmail.text ? (
-                  <div className="max-h-96 overflow-y-auto whitespace-pre-wrap rounded-lg border border-base-300 bg-base-200/50 p-4 text-sm leading-6">
-                    {selectedEmail.text}
-                  </div>
-                ) : selectedEmail.html ? (
+                {selectedEmail.html ? (
                   <iframe
                     title="Admin email HTML preview"
                     sandbox=""
                     srcDoc={selectedEmail.html}
                     className="min-h-96 w-full rounded-lg border border-base-300 bg-white"
                   />
+                ) : selectedEmail.text ? (
+                  <div className="max-h-96 overflow-y-auto whitespace-pre-wrap rounded-lg border border-base-300 bg-base-200/50 p-4 text-sm leading-6">
+                    {selectedEmail.text}
+                  </div>
                 ) : (
                   <div className="rounded-lg border border-dashed border-base-300 p-8 text-center text-neutral/50">
                     No body content.

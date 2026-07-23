@@ -97,7 +97,7 @@ const UserModal = ({ editingUser, setEditingUser, setUsers }) => {
 
   return (
     <dialog className={`modal ${editingUser ? "modal-open" : ""}`}>
-      <div className="modal-box max-w-2xl overflow-hidden rounded-xl border border-primary/20 bg-base-100 p-0 text-neutral shadow-2xl">
+      <div className="modal-box max-w-2xl overflow-auto rounded-xl border border-primary/20 bg-base-100 p-0 text-neutral shadow-2xl">
         <div className="flex items-start justify-between border-b border-primary/10 bg-primary/10 px-6 py-5">
           <div>
             <div className="flex items-center gap-3">
