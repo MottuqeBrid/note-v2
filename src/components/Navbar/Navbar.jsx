@@ -5,6 +5,7 @@ import { useAuth } from "../../hooks/useAuth";
 
 const Navbar = ({ page = "home" }) => {
   const { user, logout, loading } = useAuth();
+  console.log("Navbar user:", user);
   const navLinks = (
     <>
       <li>
@@ -21,10 +22,12 @@ const Navbar = ({ page = "home" }) => {
           <li>
             <NavLink to="/shared-files">Shared Files</NavLink>
           </li>
-          <li>
-            <NavLink to="/email">Email</NavLink>
-          </li>
         </>
+      )}
+      {user?.level >= 2 && (
+        <li>
+          <NavLink to="/email">Email</NavLink>
+        </li>
       )}
       {user?.role === "admin" && (
         <li>

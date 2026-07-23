@@ -15,6 +15,7 @@ import {
   FiXCircle,
 } from "react-icons/fi";
 import useTheme from "../../../hooks/useTheme";
+import { Link } from "react-router";
 
 const TableCheckbox = forwardRef((props, ref) => (
   <input
@@ -104,7 +105,6 @@ const getInitial = (name = "U") => name.trim().charAt(0).toUpperCase();
 const UserTable = ({ data = [], loading, onEdit, onDelete, search }) => {
   const { theme } = useTheme();
   const [copied, setCopied] = useState(false);
-
   const columns = useMemo(
     () => [
       {
@@ -123,9 +123,13 @@ const UserTable = ({ data = [], loading, onEdit, onDelete, search }) => {
             </div>
 
             <div className="min-w-0">
-              <p className="truncate font-semibold text-neutral">
-                {row.name || "Unnamed User"}
-              </p>
+              <Link
+                to={`/admin/users/${row._id}`}
+                className="truncate font-semibold text-neutral"
+              >
+                {(row.name || "Unnamed User") +
+                  (row?.level ? ` (L${row.level})` : "")}
+              </Link>
               <p className="truncate text-xs text-neutral/60 md:hidden">
                 {row.email}
               </p>

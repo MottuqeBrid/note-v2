@@ -19,6 +19,7 @@ import Email from "../pages/Email/Email";
 import Emails from "../pages/AdminPage/Emails/Emails";
 import OtpVerification from "../layouts/OtpVerification/OtpVerification";
 import Verify from "../layouts/Verify/Verify";
+import SingleUser from "../pages/AdminPage/SingleUser/SingleUser";
 
 export const router = createBrowserRouter([
   {
@@ -90,6 +91,10 @@ export const router = createBrowserRouter([
       {
         path: "users",
         Component: Users,
+      },
+      {
+        path: "users/:id",
+        Component: SingleUser,
       },
       {
         path: "notes",

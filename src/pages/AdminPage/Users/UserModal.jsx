@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   FiCheckCircle,
   FiMail,
   FiPhone,
+  FiPlus,
   FiSave,
   FiShield,
   FiTrash2,
@@ -11,10 +12,20 @@ import {
 } from "react-icons/fi";
 import Swal from "sweetalert2";
 import useAxios from "../../../lib/useAxios";
+import { PiRanking } from "react-icons/pi";
 
 const UserModal = ({ editingUser, setEditingUser, setUsers }) => {
   const axios = useAxios();
   const [isSaving, setIsSaving] = useState(false);
+  const [emails, setEmails] = useState([]);
+  const [newEmail, setNewEmail] = useState("");
+  const prevUserId = useRef(null);
+
+  if (editingUser?._id !== prevUserId.current) {
+    prevUserId.current = editingUser?._id;
+    setEmails(editingUser?.emails || []);
+    setNewEmail("");
+  }
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -29,8 +40,10 @@ const UserModal = ({ editingUser, setEditingUser, setUsers }) => {
       email: formData.get("email"),
       phoneNumber: formData.get("phoneNumber"),
       role: formData.get("role"),
+      level: parseInt(formData.get("level"), 10),
       isDeleted: formData.get("isDeleted") === "on",
       isVerified: formData.get("isVerified") === "on",
+      emails,
     };
 
     try {
@@ -67,6 +80,21 @@ const UserModal = ({ editingUser, setEditingUser, setUsers }) => {
     }
   };
 
+  const handleAddEmail = () => {
+    const trimmed = newEmail.trim().toLowerCase();
+    if (!trimmed) return;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      Swal.fire("Invalid", "Please enter a valid email address.", "error");
+      return;
+    }
+    if (emails.includes(trimmed)) {
+      Swal.fire("Duplicate", "This email is already added.", "warning");
+      return;
+    }
+    setEmails((prev) => [...prev, trimmed]);
+    setNewEmail("");
+  };
+
   return (
     <dialog className={`modal ${editingUser ? "modal-open" : ""}`}>
       <div className="modal-box max-w-2xl overflow-hidden rounded-xl border border-primary/20 bg-base-100 p-0 text-neutral shadow-2xl">
@@ -80,7 +108,7 @@ const UserModal = ({ editingUser, setEditingUser, setUsers }) => {
               <div>
                 <h3 className="text-xl font-bold">Edit User</h3>
                 <p className="text-sm text-neutral/70">
-                  Update profile, role, and account status.
+                  Update profile, role, Level and account status.
                 </p>
               </div>
             </div>
@@ -143,6 +171,23 @@ const UserModal = ({ editingUser, setEditingUser, setUsers }) => {
 
             <label className="form-control">
               <span className="label-text mb-1 flex items-center gap-2 font-medium">
+                <PiRanking />
+                Level
+              </span>
+              <select
+                name="level"
+                defaultValue={editingUser.level}
+                className="select select-bordered w-full bg-base-100 focus:outline-primary"
+              >
+                {Array.from({ length: 10 }, (_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {i + 1}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="form-control">
+              <span className="label-text mb-1 flex items-center gap-2 font-medium">
                 <FiShield />
                 Role
               </span>
@@ -156,6 +201,63 @@ const UserModal = ({ editingUser, setEditingUser, setUsers }) => {
                 <option value="admin">Admin</option>
               </select>
             </label>
+
+            <div className="rounded-lg border border-primary/10 bg-primary/5 p-4">
+              <span className="label-text mb-2 flex items-center gap-2 font-medium text-primary">
+                <FiMail />
+                Emails
+              </span>
+
+              {emails.length > 0 && (
+                <div className="mb-3 flex flex-wrap gap-2">
+                  {emails.map((email, index) => (
+                    <span
+                      key={index}
+                      className="badge badge-outline badge-primary gap-1 pr-1"
+                    >
+                      {email}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setEmails((prev) =>
+                            prev.filter((_, i) => i !== index),
+                          )
+                        }
+                        className="ml-1 text-error/70 hover:text-error"
+                        aria-label={`Remove ${email}`}
+                      >
+                        <FiX size={12} />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              <div className="flex gap-2">
+                <input
+                  type="email"
+                  value={newEmail}
+                  onChange={(e) => setNewEmail(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddEmail();
+                    }
+                  }}
+                  className="input input-bordered input-sm grow bg-base-100 focus:outline-primary"
+                  placeholder="Add an email address"
+                />
+                <button
+                  type="button"
+                  onClick={handleAddEmail}
+                  className="btn btn-primary btn-sm gap-1"
+                  disabled={!newEmail.trim()}
+                >
+                  <FiPlus />
+                  Add
+                </button>
+              </div>
+            </div>
 
             <div className="grid gap-3 rounded-xl border border-primary/10 bg-primary/5 p-4 md:grid-cols-2">
               <label className="flex cursor-pointer items-center justify-between gap-4 rounded-lg bg-base-100 px-4 py-3 shadow-sm">
